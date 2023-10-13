@@ -1,14 +1,13 @@
 package com.ikubinfo.plumbershop.user.controller;
 
+import com.ikubinfo.plumbershop.common.dto.Filter;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -21,5 +20,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDto> saveUser(@Valid @RequestBody UserDto userDto){
         return ResponseEntity.ok(userService.saveUser(userDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<UserDto>> getAllUsers(@Valid @RequestBody Filter filter){
+        return ResponseEntity.ok(userService.getAllUsers(filter));
     }
 }

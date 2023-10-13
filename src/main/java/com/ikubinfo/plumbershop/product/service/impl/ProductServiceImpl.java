@@ -64,19 +64,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getById(String id) {
-        ProductDocument document = productRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException(PRODUCT,ID,id));
-
+        ProductDocument document = getProductDocumentById(id);
         return productMapper.toProductDto(document);
     }
 
     @Override
+    public ProductDto updateById(String id, ProductDto productDto) {
+        ProductDocument document = getProductDocumentById(id);
+        ProductDocument updatedDocument = productMapper.updateProductFromDto(productDto,document);
+
+        return productMapper.toProductDto(productRepository.save(updatedDocument));
+    }
+
+    @Override
     public String deleteById(String id) {
-        ProductDocument document = productRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException(PRODUCT,ID,id));
+        ProductDocument document = getProductDocumentById(id);
         productRepository.delete(document);
         return DELETED_SUCCESSFULLY.replace(DOCUMENT, PRODUCT);
     }
+
+    private ProductDocument getProductDocumentById(String id) {
+        return productRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException(PRODUCT,ID, id));
+    }
+
 
     private BooleanExpression hasName(String name, QProductDocument qProduct){
         return name == null ? qProduct.id.isNotNull(): qProduct.name.eq(name);

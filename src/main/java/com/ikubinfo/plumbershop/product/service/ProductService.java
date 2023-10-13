@@ -11,5 +11,8 @@ public interface ProductService {
 
     ProductDto getById(String id);
 
+    ProductDto updateById(String id, ProductDto productDto);
+
     String deleteById(String id);
+
 }

@@ -8,4 +8,8 @@ public interface ProductService {
     ProductDto save(ProductDto productDto);
 
     Page<ProductDto> getAll(ProductRequest request);
+
+    ProductDto getById(String id);
+
+    String deleteById(String id);
 }

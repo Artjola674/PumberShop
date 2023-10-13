@@ -1,0 +1,28 @@
+package com.ikubinfo.plumbershop.user.service.impl;
+
+import com.ikubinfo.plumbershop.user.dto.UserDto;
+import com.ikubinfo.plumbershop.user.mapper.UserMapper;
+import com.ikubinfo.plumbershop.user.model.UserDocument;
+import com.ikubinfo.plumbershop.user.repo.UserRepository;
+import com.ikubinfo.plumbershop.user.service.UserService;
+import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        userMapper = Mappers.getMapper(UserMapper.class);
+    }
+
+    @Override
+    public UserDto saveUser(UserDto userDto) {
+        UserDocument document = userRepository.save(userMapper.toUserDocument(userDto));
+        return userMapper.toUserDto(document);
+    }
+}

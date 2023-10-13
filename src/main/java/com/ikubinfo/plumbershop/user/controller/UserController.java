@@ -26,4 +26,9 @@ public class UserController {
     public ResponseEntity<Page<UserDto>> getAllUsers(@Valid @RequestBody Filter filter){
         return ResponseEntity.ok(userService.getAllUsers(filter));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable String id){
+        return ResponseEntity.ok(userService.getById(id));
+    }
 }

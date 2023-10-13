@@ -10,4 +10,6 @@ public interface UserService {
     UserDto saveUser(UserDto userDto);
 
     Page<UserDto> getAllUsers(Filter filter);
+
+    UserDto getById(String id);
 }

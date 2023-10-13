@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.user.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.mapper.UserMapper;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import static com.ikubinfo.plumbershop.common.constants.Constants.ID;
+import static com.ikubinfo.plumbershop.user.constants.UserConstants.USER;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -38,5 +42,16 @@ public class UserServiceImpl implements UserService {
                 Sort.by(Sort.Direction.valueOf(filter.getSortType()), filter.getSortBy()));
 
         return userRepository.findAll(pageable).map(userMapper::toUserDto);
+    }
+
+    @Override
+    public UserDto getById(String id) {
+        UserDocument document = findUserById(id);
+        return userMapper.toUserDto(document);
+    }
+
+    private UserDocument findUserById(String id) {
+         return userRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException(USER,ID, id));
     }
 }

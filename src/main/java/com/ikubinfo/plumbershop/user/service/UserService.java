@@ -12,4 +12,6 @@ public interface UserService {
     Page<UserDto> getAllUsers(Filter filter);
 
     UserDto getById(String id);
+
+    UserDto updateById(String id, UserDto userDto);
 }

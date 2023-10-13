@@ -6,6 +6,7 @@ import com.ikubinfo.plumbershop.product.dto.ProductDto;
 import com.ikubinfo.plumbershop.product.dto.ProductRequest;
 import com.ikubinfo.plumbershop.product.mapper.ProductMapper;
 import com.ikubinfo.plumbershop.product.model.ProductDocument;
+import com.ikubinfo.plumbershop.product.model.QProductDocument;
 import com.ikubinfo.plumbershop.product.repo.ProductRepository;
 import com.ikubinfo.plumbershop.product.service.ProductService;
 import com.querydsl.core.types.dsl.BooleanExpression;

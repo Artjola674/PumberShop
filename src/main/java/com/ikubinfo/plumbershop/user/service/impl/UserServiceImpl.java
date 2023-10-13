@@ -50,6 +50,13 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(document);
     }
 
+    @Override
+    public UserDto updateById(String id, UserDto userDto) {
+        UserDocument document = findUserById(id);
+        UserDocument updatedUser = userRepository.save(userMapper.updateUserFromDto(userDto, document));
+        return userMapper.toUserDto(updatedUser);
+    }
+
     private UserDocument findUserById(String id) {
          return userRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(USER,ID, id));

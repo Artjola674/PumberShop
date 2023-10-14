@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.user.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.mapper.UserMapper;
@@ -12,27 +13,35 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.ikubinfo.plumbershop.common.constants.Constants.ID;
+import static com.ikubinfo.plumbershop.user.constants.UserConstants.EMAIL_EXISTS;
 import static com.ikubinfo.plumbershop.user.constants.UserConstants.USER;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         userMapper = Mappers.getMapper(UserMapper.class);
     }
 
     @Override
     public UserDto saveUser(UserDto userDto) {
-        UserDocument document = userRepository.save(userMapper.toUserDocument(userDto));
-        return userMapper.toUserDto(document);
+        if (userRepository.existsByEmail(userDto.getEmail())){
+            throw new BadRequestException(EMAIL_EXISTS + userDto.getEmail());
+        }
+        UserDocument document = userMapper.toUserDocument(userDto);
+        document.setPassword(passwordEncoder.encode(document.getPassword()));
+        UserDocument savedUser = userRepository.save(document);
+        return userMapper.toUserDto(savedUser);
     }
 
     @Override
@@ -53,6 +62,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateById(String id, UserDto userDto) {
         UserDocument document = findUserById(id);
+        if (!userDto.getEmail().equalsIgnoreCase(document.getEmail())
+                && userRepository.existsByEmail(userDto.getEmail())){
+            throw new BadRequestException(EMAIL_EXISTS + userDto.getEmail());
+        }
         UserDocument updatedUser = userRepository.save(userMapper.updateUserFromDto(userDto, document));
         return userMapper.toUserDto(updatedUser);
     }

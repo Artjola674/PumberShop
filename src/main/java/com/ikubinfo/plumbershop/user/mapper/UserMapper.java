@@ -26,12 +26,7 @@ public interface UserMapper {
         document.setFirstName( dto.getFirstName() );
         document.setLastName( dto.getLastName() );
         document.setEmail( dto.getEmail() );
-        if ( dto.getRole() != null ) {
-            document.setRole( Enum.valueOf( Role.class, dto.getRole() ) );
-        }
-        else {
-            document.setRole( null );
-        }
+
         if ( dto.getDepartment() != null ) {
             document.setDepartment( Enum.valueOf( Department.class, dto.getDepartment() ) );
         }

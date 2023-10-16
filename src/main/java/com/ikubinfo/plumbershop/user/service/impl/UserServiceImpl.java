@@ -17,8 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.ikubinfo.plumbershop.common.constants.Constants.ID;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.EMAIL_EXISTS;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.USER;
+import static com.ikubinfo.plumbershop.user.constants.UserConstants.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,8 +69,16 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(updatedUser);
     }
 
+    @Override
+    public UserDocument getUserByEmail(String email){
+        return  userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, email));
+    }
+
     private UserDocument findUserById(String id) {
          return userRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(USER,ID, id));
     }
+
+
 }

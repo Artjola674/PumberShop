@@ -9,8 +9,8 @@ import com.ikubinfo.plumbershop.exception.RefreshTokenException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.security.JwtTokenProvider;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
-import com.ikubinfo.plumbershop.user.repo.UserRepository;
 
+import com.ikubinfo.plumbershop.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,8 +23,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.ikubinfo.plumbershop.auth.constants.Constants.*;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.USER;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.USERNAME;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     @Value("${app-jwt-refresh-token-expiration}")
     private long jwtRefreshTokenExpirationDate;
 
@@ -49,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtTokenProvider.generateToken(authentication.getName());
 
-        UserDocument user = getUser(request.getEmail());
+        UserDocument user = userService.getUserByEmail(request.getEmail());
         String refreshToken = generateRefreshToken(user);
 
         return AuthResponse.builder()
@@ -91,12 +89,6 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         refreshTokenRepository.save(refreshToken);
         return refreshToken.getToken();
-    }
-
-    private UserDocument getUser(String email) {
-        return userRepository.findUserByEmail(email)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(USER, USERNAME, email));
     }
 
 

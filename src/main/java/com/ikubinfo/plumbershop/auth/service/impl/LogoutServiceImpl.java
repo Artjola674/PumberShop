@@ -23,8 +23,7 @@ public class LogoutServiceImpl implements LogoutHandler {
 
         String email = jwtTokenProvider.getUsername(jwt);
         UserDocument user = userService.getUserByEmail(email);
-        refreshTokenRepository.findByUserId(user.getId())
-                .forEach(refreshTokenRepository::delete);
+        refreshTokenRepository.deleteAll(refreshTokenRepository.findByUserId(user.getId()));
     }
 
 

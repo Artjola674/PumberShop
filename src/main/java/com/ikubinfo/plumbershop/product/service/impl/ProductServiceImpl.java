@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.product.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.product.dto.ProductDto;
 import com.ikubinfo.plumbershop.product.dto.ProductRequest;
@@ -48,7 +49,8 @@ public class ProductServiceImpl implements ProductService {
         Filter filter = request.getFilter();
 
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
-                Sort.by(Sort.Direction.valueOf(filter.getSortType()), filter.getSortBy()));
+                Sort.by(Sort.Direction.valueOf(filter.getSortType()),
+                        UtilClass.getSortField(ProductDocument.class, filter.getSortBy())));
 
         QProductDocument qProduct = new QProductDocument(PRODUCT_DOCUMENT);
 

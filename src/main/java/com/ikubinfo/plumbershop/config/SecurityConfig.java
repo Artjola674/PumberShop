@@ -1,5 +1,6 @@
 package com.ikubinfo.plumbershop.config;
 
+import com.ikubinfo.plumbershop.security.JwtAuthenticationEntryPoint;
 import com.ikubinfo.plumbershop.security.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class SecurityConfig {
             // other public endpoints of your API may be appended to this array
     };
 
-//    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAuthenticationFilter authenticationFilter;
     private final UserDetailsService userDetailsService;
     private final LogoutHandler logoutHandler;
@@ -52,8 +53,9 @@ public class SecurityConfig {
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                ).exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                ).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->

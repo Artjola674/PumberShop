@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +19,7 @@ public class LogoutServiceImpl implements LogoutHandler {
     private final JwtTokenProvider jwtTokenProvider;
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        String jwt = getTokenFromRequest(request);
+        String jwt = jwtTokenProvider.getTokenFromRequest(request);
 
         String email = jwtTokenProvider.getUsername(jwt);
         UserDocument user = userService.getUserByEmail(email);
@@ -28,15 +27,6 @@ public class LogoutServiceImpl implements LogoutHandler {
                 .forEach(refreshTokenRepository::delete);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request) {
 
-        String bearerToken = request.getHeader("Authorization");
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
-    }
 
 }

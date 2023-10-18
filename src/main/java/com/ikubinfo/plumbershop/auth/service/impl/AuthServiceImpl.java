@@ -85,7 +85,6 @@ public class AuthServiceImpl implements AuthService {
                 .expirationDate(new Date(new Date().getTime() + jwtRefreshTokenExpirationDate))
                 .user(user)
                 .token(UUID.randomUUID().toString())
-//                .token(jwtTokenProvider.generateToken(user.getEmail()))
                 .build();
         refreshTokenRepository.save(refreshToken);
         return refreshToken.getToken();

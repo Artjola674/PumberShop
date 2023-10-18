@@ -24,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/refreshToken")
-    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+    public ResponseEntity<AuthResponse> generateTokenFromRefreshToken(@Valid @RequestBody TokenRefreshRequest request) {
         return ResponseEntity.ok(authService.generateTokenFromRefreshToken(request.getRefreshToken()));
     }
 

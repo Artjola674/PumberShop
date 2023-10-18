@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,11 +37,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto saveUser(UserDto userDto) {
+    public UserDto saveUser(UserDto userDto, CustomUserDetails loggedUser) {
+
+        if (loggedUser != null && !isAdmin(loggedUser)) {
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+
         if (userRepository.existsByEmail(userDto.getEmail())){
             throw new BadRequestException(EMAIL_EXISTS + userDto.getEmail());
         }
         UserDocument document = userMapper.toUserDocument(userDto);
+
+        if (loggedUser == null){
+            document.setRole(Role.USER);
+        }
+
         document.setPassword(passwordEncoder.encode(document.getPassword()));
         UserDocument savedUser = userRepository.save(document);
         return userMapper.toUserDto(savedUser);
@@ -57,19 +68,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(String id, CustomUserDetails loggedUser) {
-        UserDocument loggedUserDoc = findUserById(loggedUser.getId());
-
-        if (!loggedUserDoc.getRole().equals(Role.ADMIN)
-                && !loggedUserDoc.getId().equals(id)){
-            throw new BadRequestException(ACTION_NOT_ALLOWED);
-        }
+        checkIfUserCanPerformAction(id, loggedUser);
 
         UserDocument document = findUserById(id);
         return userMapper.toUserDto(document);
     }
 
     @Override
-    public UserDto updateById(String id, UserDto userDto) {
+    public UserDto updateById(String id, UserDto userDto, CustomUserDetails loggedUser) {
+        checkIfUserCanPerformAction(id, loggedUser);
         UserDocument document = findUserById(id);
         if (!userDto.getEmail().equalsIgnoreCase(document.getEmail())
                 && userRepository.existsByEmail(userDto.getEmail())){
@@ -96,5 +103,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()-> new ResourceNotFoundException(USER,ID, id));
     }
 
+    private void checkIfUserCanPerformAction(String id, CustomUserDetails loggedUser) {
+        if (!isAdmin(loggedUser)
+                && !loggedUser.getId().equals(id)){
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+    }
+
+    private boolean isAdmin(CustomUserDetails loggedUser) {
+        return loggedUser.getAuthorities()
+                .contains(new SimpleGrantedAuthority(String.valueOf(Role.ADMIN)));
+    }
 
 }

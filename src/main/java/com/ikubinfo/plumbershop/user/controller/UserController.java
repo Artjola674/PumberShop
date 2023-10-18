@@ -21,9 +21,9 @@ public class UserController {
 
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserDto> saveUser(@Valid @RequestBody UserDto userDto){
-        return ResponseEntity.ok(userService.saveUser(userDto));
+    public ResponseEntity<UserDto> saveUser(@Valid @RequestBody UserDto userDto,
+                                            @CurrentUser CustomUserDetails loggedUser){
+        return ResponseEntity.ok(userService.saveUser(userDto, loggedUser));
     }
 
     @GetMapping
@@ -40,10 +40,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<UserDto> updateUserById(@PathVariable String id,
-                                                  @Valid @RequestBody UserDto userDto){
-        return ResponseEntity.ok(userService.updateById(id,userDto));
+                                                  @Valid @RequestBody UserDto userDto,
+                                                  @CurrentUser CustomUserDetails loggedUser){
+        return ResponseEntity.ok(userService.updateById(id, userDto, loggedUser));
     }
 
     @DeleteMapping("/{id}")

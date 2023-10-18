@@ -9,13 +9,13 @@ import org.springframework.data.domain.Page;
 public interface UserService {
 
 
-    UserDto saveUser(UserDto userDto);
+    UserDto saveUser(UserDto userDto, CustomUserDetails loggedUser);
 
     Page<UserDto> getAllUsers(Filter filter);
 
     UserDto getById(String id, CustomUserDetails loggedUser);
 
-    UserDto updateById(String id, UserDto userDto);
+    UserDto updateById(String id, UserDto userDto, CustomUserDetails loggedUser);
 
     String deleteById(String id);
 

@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
 @SpringBootApplication
 @EnableMongoAuditing
 public class PlumberShopApplication {
@@ -16,8 +17,9 @@ public class PlumberShopApplication {
 	}
 
 	@Bean
-	public PasswordEncoder encoder() {
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
 
 }

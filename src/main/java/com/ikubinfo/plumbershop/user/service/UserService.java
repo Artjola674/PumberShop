@@ -2,6 +2,7 @@ package com.ikubinfo.plumbershop.user.service;
 
 import com.ikubinfo.plumbershop.common.dto.Filter;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
+import com.ikubinfo.plumbershop.user.model.UserDocument;
 import org.springframework.data.domain.Page;
 
 public interface UserService {
@@ -14,4 +15,6 @@ public interface UserService {
     UserDto getById(String id);
 
     UserDto updateById(String id, UserDto userDto);
+
+    UserDocument getUserByEmail(String email);
 }

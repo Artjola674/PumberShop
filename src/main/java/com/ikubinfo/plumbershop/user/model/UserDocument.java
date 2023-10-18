@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.user.model;
 
 import com.ikubinfo.plumbershop.common.model.BaseDocument;
+import com.ikubinfo.plumbershop.user.dto.Address;
 import com.ikubinfo.plumbershop.user.enums.Department;
 import com.ikubinfo.plumbershop.user.enums.Role;
 import lombok.Data;
@@ -18,5 +19,5 @@ public class UserDocument extends BaseDocument {
     private String password;
     private Department department;
     private String phone;
-
+    private Address address;
 }

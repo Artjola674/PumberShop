@@ -18,5 +18,6 @@ public class UserDto extends BaseDto {
     @Pattern(regexp = "(^DEPARTMENT_ONE$|^DEPARTMENT_TWO$)",message = "Role must be 'DEPARTMENT_ONE', 'DEPARTMENT_TWO'")
     private String department;
     private String phone;
+    private Address address;
 
 }

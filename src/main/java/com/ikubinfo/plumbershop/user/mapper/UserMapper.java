@@ -32,6 +32,7 @@ public interface UserMapper {
             document.setDepartment( null );
         }
         document.setPhone( dto.getPhone() );
+        document.setAddress( dto.getAddress() );
 
         return document;
     }

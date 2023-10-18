@@ -2,7 +2,6 @@ package com.ikubinfo.plumbershop.user.mapper;
 
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.enums.Department;
-import com.ikubinfo.plumbershop.user.enums.Role;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import org.mapstruct.Mapper;
 
@@ -22,7 +21,6 @@ public interface UserMapper {
         document.setLastModifiedDate( dto.getLastModifiedDate() );
         document.setCreatedBy( dto.getCreatedBy() );
         document.setLastModifiedBy( dto.getLastModifiedBy() );
-        document.setDeleted( dto.isDeleted() );
         document.setFirstName( dto.getFirstName() );
         document.setLastName( dto.getLastName() );
         document.setEmail( dto.getEmail() );

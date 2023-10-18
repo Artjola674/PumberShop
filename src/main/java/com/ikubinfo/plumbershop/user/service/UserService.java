@@ -16,5 +16,9 @@ public interface UserService {
 
     UserDto updateById(String id, UserDto userDto);
 
+    String deleteById(String id);
+
     UserDocument getUserByEmail(String email);
+
+
 }

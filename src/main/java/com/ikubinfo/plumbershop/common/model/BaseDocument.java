@@ -9,5 +9,4 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BaseDocument extends Auditable{
     @Id
     private String id;
-    private boolean deleted;
 }

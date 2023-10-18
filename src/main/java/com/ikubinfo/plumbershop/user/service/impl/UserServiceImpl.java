@@ -16,7 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.ikubinfo.plumbershop.common.constants.Constants.ID;
+import static com.ikubinfo.plumbershop.common.constants.Constants.*;
 import static com.ikubinfo.plumbershop.user.constants.UserConstants.*;
 
 @Service
@@ -67,6 +67,12 @@ public class UserServiceImpl implements UserService {
         }
         UserDocument updatedUser = userRepository.save(userMapper.updateUserFromDto(userDto, document));
         return userMapper.toUserDto(updatedUser);
+    }
+
+    @Override
+    public String deleteById(String id) {
+        userRepository.deleteById(id);
+        return DELETED_SUCCESSFULLY.replace(DOCUMENT,USER);
     }
 
     @Override

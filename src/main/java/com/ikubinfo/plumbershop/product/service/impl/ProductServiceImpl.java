@@ -75,8 +75,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public String deleteById(String id) {
-        ProductDocument document = getProductDocumentById(id);
-        productRepository.delete(document);
+        productRepository.deleteById(id);
         return DELETED_SUCCESSFULLY.replace(DOCUMENT, PRODUCT);
     }
 

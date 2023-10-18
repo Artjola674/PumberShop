@@ -11,5 +11,4 @@ public class BaseDto {
     private LocalDate lastModifiedDate;
     private UserDocument createdBy;
     private UserDocument lastModifiedBy;
-    private boolean deleted;
 }

@@ -42,4 +42,10 @@ public class UserController {
                                                   @Valid @RequestBody UserDto userDto){
         return ResponseEntity.ok(userService.updateById(id,userDto));
     }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<String> deleteUserById(@PathVariable String id){
+        return ResponseEntity.ok(userService.deleteById(id));
+    }
 }

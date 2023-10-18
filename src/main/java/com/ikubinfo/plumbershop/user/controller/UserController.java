@@ -1,6 +1,8 @@
 package com.ikubinfo.plumbershop.user.controller;
 
 import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.security.CurrentUser;
+import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.service.UserService;
 import jakarta.validation.Valid;
@@ -32,8 +34,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<UserDto> getUserById(@PathVariable String id){
-        return ResponseEntity.ok(userService.getById(id));
+    public ResponseEntity<UserDto> getUserById(@PathVariable String id,
+                                               @CurrentUser CustomUserDetails loggedUser){
+        return ResponseEntity.ok(userService.getById(id,loggedUser));
     }
 
     @PutMapping("/{id}")

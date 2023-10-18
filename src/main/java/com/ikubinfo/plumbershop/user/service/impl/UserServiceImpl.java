@@ -3,7 +3,9 @@ package com.ikubinfo.plumbershop.user.service.impl;
 import com.ikubinfo.plumbershop.common.dto.Filter;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
+import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
+import com.ikubinfo.plumbershop.user.enums.Role;
 import com.ikubinfo.plumbershop.user.mapper.UserMapper;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import com.ikubinfo.plumbershop.user.repo.UserRepository;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.ikubinfo.plumbershop.common.constants.BadRequest.ACTION_NOT_ALLOWED;
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
 import static com.ikubinfo.plumbershop.user.constants.UserConstants.*;
 
@@ -53,7 +56,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(String id) {
+    public UserDto getById(String id, CustomUserDetails loggedUser) {
+        UserDocument loggedUserDoc = findUserById(loggedUser.getId());
+
+        if (!loggedUserDoc.getRole().equals(Role.ADMIN)
+                && !loggedUserDoc.getId().equals(id)){
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+
         UserDocument document = findUserById(id);
         return userMapper.toUserDto(document);
     }

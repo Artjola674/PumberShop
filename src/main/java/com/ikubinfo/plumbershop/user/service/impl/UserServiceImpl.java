@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.user.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
@@ -61,7 +62,8 @@ public class UserServiceImpl implements UserService {
     public Page<UserDto> getAllUsers(Filter filter) {
 
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
-                Sort.by(Sort.Direction.valueOf(filter.getSortType()), filter.getSortBy()));
+                Sort.by(Sort.Direction.valueOf(filter.getSortType()),
+                        UtilClass.getSortField(UserDocument.class, filter.getSortBy())));
 
         return userRepository.findAll(pageable).map(userMapper::toUserDto);
     }

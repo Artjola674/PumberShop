@@ -1,9 +1,9 @@
 package com.ikubinfo.plumbershop.user.controller;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
 import com.ikubinfo.plumbershop.security.CurrentUser;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
+import com.ikubinfo.plumbershop.user.dto.UserRequest;
 import com.ikubinfo.plumbershop.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +28,8 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Page<UserDto>> getAllUsers(@Valid @RequestBody Filter filter){
-        return ResponseEntity.ok(userService.getAllUsers(filter));
+    public ResponseEntity<Page<UserDto>> getAllUsers(@Valid @RequestBody UserRequest userRequest){
+        return ResponseEntity.ok(userService.getAllUsers(userRequest));
     }
 
     @GetMapping("/{id}")

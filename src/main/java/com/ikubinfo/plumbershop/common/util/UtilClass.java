@@ -1,5 +1,9 @@
 package com.ikubinfo.plumbershop.common.util;
 
+import com.ikubinfo.plumbershop.security.CustomUserDetails;
+import com.ikubinfo.plumbershop.user.enums.Role;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import static com.ikubinfo.plumbershop.common.constants.Constants.ID;
 import static java.util.Arrays.stream;
 
@@ -7,6 +11,11 @@ public class UtilClass {
 
     public static <T> String getSortField(Class<T> tClass, String field) {
         return fieldExistsInClass(tClass,field) ? field : ID;
+    }
+
+    public static boolean userHasGivenRole(CustomUserDetails loggedUser, Role role) {
+        return loggedUser.getAuthorities()
+                .contains(new SimpleGrantedAuthority(String.valueOf(role)));
     }
 
     private static <T> boolean fieldExistsInClass(Class<T> tClass, String field) {

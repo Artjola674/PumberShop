@@ -14,7 +14,6 @@ import com.ikubinfo.plumbershop.user.repo.UserRepository;
 import com.ikubinfo.plumbershop.user.service.UserService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.*;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto saveUser(UserDto userDto, CustomUserDetails loggedUser) {
 
-        if (loggedUser != null && !isAdmin(loggedUser)) {
+        if (loggedUser != null && !UtilClass.userHasGivenRole(loggedUser,Role.ADMIN)) {
             throw new BadRequestException(ACTION_NOT_ALLOWED);
         }
 
@@ -118,15 +117,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkIfUserCanPerformAction(String id, CustomUserDetails loggedUser) {
-        if (!isAdmin(loggedUser)
+        if (!UtilClass.userHasGivenRole(loggedUser,Role.ADMIN)
                 && !loggedUser.getId().equals(id)){
             throw new BadRequestException(ACTION_NOT_ALLOWED);
         }
     }
 
-    private boolean isAdmin(CustomUserDetails loggedUser) {
-        return loggedUser.getAuthorities()
-                .contains(new SimpleGrantedAuthority(String.valueOf(Role.ADMIN)));
-    }
+
 
 }

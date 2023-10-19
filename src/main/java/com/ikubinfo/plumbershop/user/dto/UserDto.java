@@ -19,5 +19,7 @@ public class UserDto extends BaseDto {
     private String department;
     private String phone;
     private Address address;
+    private double discountPercentage;
+
 
 }

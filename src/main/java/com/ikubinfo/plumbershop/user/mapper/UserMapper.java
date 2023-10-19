@@ -33,6 +33,7 @@ public interface UserMapper {
         }
         document.setPhone( dto.getPhone() );
         document.setAddress( dto.getAddress() );
+        document.setDiscountPercentage(dto.getDiscountPercentage());
 
         return document;
     }

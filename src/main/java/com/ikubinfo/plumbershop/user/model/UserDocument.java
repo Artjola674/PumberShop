@@ -20,4 +20,5 @@ public class UserDocument extends BaseDocument {
     private Department department;
     private String phone;
     private Address address;
+    private double discountPercentage;
 }

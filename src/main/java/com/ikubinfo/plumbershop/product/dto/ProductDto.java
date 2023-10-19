@@ -10,8 +10,8 @@ public class ProductDto extends BaseDto {
 
     private String name;
     private String description;
-    private Long buyingPrice;
-    private Long sellingPrice;
+    private double buyingPrice;
+    private double sellingPrice;
     private Integer count;
     private String code;
 

@@ -13,7 +13,7 @@ import java.util.List;
 public class OrderDocument extends BaseDocument {
 
     private List<OrderItemDocument> orderItems;
-    private UserDocument plumber;
+    private UserDocument customer;
     private double totalPrice;
     private double earnings;
     private LocalDate date;

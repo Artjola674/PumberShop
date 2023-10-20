@@ -14,7 +14,7 @@ public class OrderDto extends BaseDto {
     @NotNull
     @NotEmpty
     private List<OrderItemDto> orderItems;
-    private UserDto plumber;
+    private UserDto customer;
     private double totalPrice;
     private double earnings;
     private LocalDate date;

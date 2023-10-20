@@ -35,15 +35,15 @@ public class OrderServiceImpl implements OrderService {
 
         double buyingPriceSum = calculateTotalProductsBuyingPrice(orderDocument);
 
-        if (UtilClass.userHasGivenRole(loggedUser, Role.PLUMBER)) {
-            orderDocument.setPlumber(userService.getUserByEmail(loggedUser.getEmail()));
+        if (UtilClass.userHasGivenRole(loggedUser, Role.PLUMBER)
+                && orderDocument.getCustomer() != null) {
             totalPrice = totalPrice *
-                    (1-orderDocument.getPlumber().getDiscountPercentage()/100);
-        } else {
-            orderDocument.setPlumber(null);
+                    (1-orderDocument.getCustomer().getDiscountPercentage()/100);
         }
 
         double earnings = totalPrice - buyingPriceSum;
+
+        orderDocument.setCustomer(userService.getUserByEmail(loggedUser.getEmail()));
 
         orderDocument.setTotalPrice(totalPrice);
         orderDocument.setEarnings(earnings);

@@ -12,6 +12,7 @@ public class Constants {
     public static final String COMPANY_ADDRESS_STREET = "Papa Gjon Pali";
     public static final String COMPANY_ADDRESS_POSTAL_CODE = "1003";
     public static final String COMPANY_ADDRESS_CITY = "Tirane";
+    public static final String SPACE = " ";
 
 
 

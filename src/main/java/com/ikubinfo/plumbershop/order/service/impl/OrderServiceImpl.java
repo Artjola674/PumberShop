@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -118,21 +119,25 @@ public class OrderServiceImpl implements OrderService {
 
         String filename = createRandomString() + EXTENSION;
 
-        createBillDoc(order, filename);
+        setBillDocToOrder(order, filename);
 
         log.info("Writing file {} to directory {} ", filename, documentPath);
 
+        createDocument(order, filename);
+
+    }
+
+    private void createDocument(OrderDocument order, String filename) throws DocumentException, FileNotFoundException {
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream(documentPath + filename));
 
         document.open();
 
         Paragraph header = createParagraph();
-
-        PdfPTable itemList = createItemListTable(order);
-        PdfPTable total = createTotalTable(order);
         PdfPTable companyInformation = createCompanyInformation();
         PdfPTable customerInformation = createCustomerInformation(order.getCustomer());
+        PdfPTable itemList = createItemListTable(order);
+        PdfPTable total = createTotalTable(order);
 
         document.add(header);
         document.add(companyInformation);
@@ -140,9 +145,7 @@ public class OrderServiceImpl implements OrderService {
         document.add(itemList);
         document.add(total);
         document.close();
-
     }
-
 
 
     private Paragraph createParagraph() {
@@ -162,21 +165,14 @@ public class OrderServiceImpl implements OrderService {
 
     private PdfPTable createCompanyInformation() {
 
-        PdfPTable table = new PdfPTable(2);
-        table.setWidthPercentage(95);
-        table.setSpacingBefore(10);
-        table.setSpacingAfter(20);
+        PdfPTable table = getInformationTable(2);
 
-        PdfPCell header = createCell();
-        header.setPhrase(new Phrase(COMPANY_INFORMATION));
-        header.setBackgroundColor(BaseColor.CYAN);
-        header.setColspan(2);
+        setInformationHeader(COMPANY_INFORMATION, table);
 
         PdfPCell cell = createCell();
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setBorder(NO_BORDER);
 
-        table.addCell(header);
         addCell(table,cell,NID);
         addCell(table,cell,COMPANY_NID);
         addCell(table, cell, NAME);
@@ -194,27 +190,19 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-
     private PdfPTable createCustomerInformation(UserDocument customer) {
         Address address = customer.getAddress();
 
-        PdfPTable table = new PdfPTable(2);
-        table.setWidthPercentage(95);
-        table.setSpacingBefore(10);
-        table.setSpacingAfter(20);
+        PdfPTable table = getInformationTable(2);
 
-        PdfPCell header = createCell();
-        header.setPhrase(new Phrase(CUSTOMER_INFORMATION));
-        header.setBackgroundColor(BaseColor.CYAN);
-        header.setColspan(2);
+        setInformationHeader(CUSTOMER_INFORMATION, table);
 
         PdfPCell cell = createCell();
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setBorder(NO_BORDER);
 
-        table.addCell(header);
         addCell(table, cell, NAME);
-        addCell(table, cell, customer.getFirstName().concat(" ").concat(customer.getLastName()));
+        addCell(table, cell, customer.getFirstName().concat(SPACE).concat(customer.getLastName()));
         addCell(table, cell, EMAIL);
         addCell(table, cell, customer.getEmail());
         addCell(table, cell, CITY);
@@ -228,10 +216,30 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    private PdfPTable getInformationTable(int numColumns) {
+        PdfPTable table = getPdfPTable(numColumns);
+        table.setSpacingBefore(10);
+        table.setSpacingAfter(20);
+        return table;
+    }
+
+    private void setInformationHeader(String type, PdfPTable table) {
+        PdfPCell header = createCell();
+        header.setPhrase(new Phrase(type));
+        header.setBackgroundColor(BaseColor.CYAN);
+        header.setColspan(2);
+        table.addCell(header);
+    }
+
+    private PdfPTable getPdfPTable(int numColumns) {
+        PdfPTable table = new PdfPTable(numColumns);
+        table.setWidthPercentage(95);
+        return table;
+    }
+
 
     private PdfPTable createItemListTable(OrderDocument order) {
-        PdfPTable table = new PdfPTable(6);
-        table.setWidthPercentage(95);
+        PdfPTable table = getPdfPTable(6);
         addItemListTableHeader(table);
         addItemListRows(table, order);
         return table;
@@ -266,8 +274,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private PdfPTable createTotalTable(OrderDocument order) {
-        PdfPTable table = new PdfPTable(2);
-        table.setWidthPercentage(95);
+        PdfPTable table = getPdfPTable(2);
+
         PdfPCell cell = createCell();
         cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         cell.setPaddingRight(25);
@@ -295,7 +303,7 @@ public class OrderServiceImpl implements OrderService {
         return cell;
     }
 
-    private void createBillDoc(OrderDocument order, String filename) {
+    private void setBillDocToOrder(OrderDocument order, String filename) {
         Bill bill = Bill.builder()
                 .fileLocation(documentPath)
                 .fileName(filename)

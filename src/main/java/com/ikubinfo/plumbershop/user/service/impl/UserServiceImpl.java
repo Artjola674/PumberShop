@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import static com.ikubinfo.plumbershop.common.constants.BadRequest.ACTION_NOT_ALLOWED;
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
+import static com.ikubinfo.plumbershop.common.constants.BadRequest.EMAIL_EXISTS;
 import static com.ikubinfo.plumbershop.user.constants.UserConstants.*;
 
 @Service

@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.order.model;
 
 import com.ikubinfo.plumbershop.common.model.BaseDocument;
+import com.ikubinfo.plumbershop.order.dto.Bill;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,5 +18,6 @@ public class OrderDocument extends BaseDocument {
     private double totalPrice;
     private double earnings;
     private LocalDate date;
+    private Bill bill;
 
 }

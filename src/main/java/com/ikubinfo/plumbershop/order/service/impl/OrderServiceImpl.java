@@ -1,5 +1,6 @@
 package com.ikubinfo.plumbershop.order.service.impl;
 
+import com.ikubinfo.plumbershop.common.service.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.order.dto.Bill;
 import com.ikubinfo.plumbershop.order.dto.OrderDto;
@@ -19,6 +20,7 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mapstruct.factory.Mappers;
@@ -45,19 +47,21 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final UserService userService;
     private final ProductRepository productRepository;
+    private final EmailService emailService;
     @Value("${documents.folder}")
     private String documentPath;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, ProductRepository productRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, ProductRepository productRepository, EmailService emailService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.productRepository = productRepository;
+        this.emailService = emailService;
         this.orderMapper = Mappers.getMapper((OrderMapper.class));
     }
 
     @Transactional
     @Override
-    public OrderDto save(OrderDto orderDto, CustomUserDetails loggedUser) throws DocumentException, IOException, URISyntaxException {
+    public OrderDto save(OrderDto orderDto, CustomUserDetails loggedUser) throws DocumentException, IOException, MessagingException {
         OrderDocument orderDocument = orderMapper.toOrderDocument(orderDto);
 
         double totalPrice = calculateTotalOrderPrice(orderDocument);
@@ -79,8 +83,9 @@ public class OrderServiceImpl implements OrderService {
 
         subtractOrderAmountFromTotal(orderDocument);
 
-        generateTheBill(orderDocument);
-        //sendEmailToUser
+        generateBill(orderDocument);
+
+        emailService.sendEmailWhenOrderIsCreated(orderDocument);
 
         OrderDocument savedOrder = orderRepository.save(orderDocument);
 
@@ -115,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private void generateTheBill(OrderDocument order) throws IOException, DocumentException, URISyntaxException {
+    private void generateBill(OrderDocument order) throws IOException, DocumentException {
 
         String filename = createRandomString() + EXTENSION;
 
@@ -149,10 +154,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     private Paragraph createParagraph() {
-        Font paragraphFont = FontFactory.getFont(FontFactory.TIMES_BOLD);
-        paragraphFont.setColor(BaseColor.BLACK);
-        paragraphFont.setSize(16);
-
+        Font paragraphFont = FontFactory.getFont(FontFactory.TIMES_BOLD,16,BaseColor.BLACK);
 
         Paragraph paragraph = new Paragraph();
         paragraph.add(new Phrase(BILL ,paragraphFont));

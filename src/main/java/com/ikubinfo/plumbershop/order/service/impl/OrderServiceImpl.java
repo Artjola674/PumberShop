@@ -26,12 +26,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
@@ -59,7 +57,6 @@ public class OrderServiceImpl implements OrderService {
         this.orderMapper = Mappers.getMapper((OrderMapper.class));
     }
 
-    @Transactional
     @Override
     public OrderDto save(OrderDto orderDto, CustomUserDetails loggedUser) throws DocumentException, IOException, MessagingException {
         OrderDocument orderDocument = orderMapper.toOrderDocument(orderDto);

@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto save(OrderDto orderDto, CustomUserDetails loggedUser) throws DocumentException, IOException, MessagingException {
+    public OrderDto save(OrderDto orderDto, CustomUserDetails loggedUser) throws DocumentException, MessagingException, IOException {
         OrderDocument orderDocument = orderMapper.toOrderDocument(orderDto);
 
         double totalPrice = calculateTotalOrderPrice(orderDocument);
@@ -117,7 +117,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private void generateBill(OrderDocument order) throws IOException, DocumentException {
+    private void generateBill(OrderDocument order) throws DocumentException, FileNotFoundException {
 
         String filename = createRandomString() + EXTENSION;
 

@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers(userRequest));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     @PreAuthorize("permitAll()")
     @Operation(summary = "Get a user by ID")
     public ResponseEntity<UserDto> getUserById(@PathVariable String id,
@@ -43,7 +43,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getById(id,loggedUser));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/id/{id}")
     @PreAuthorize("permitAll()")
     @Operation(summary = "Update a user by ID")
     public ResponseEntity<UserDto> updateUserById(@PathVariable String id,
@@ -52,7 +52,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateById(id, userDto, loggedUser));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Delete a user by ID")
     public ResponseEntity<String> deleteUserById(@PathVariable String id){

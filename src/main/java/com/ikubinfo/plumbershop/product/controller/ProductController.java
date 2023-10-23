@@ -31,13 +31,13 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAll(request));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     @Operation(summary = "Get a product by ID")
     public ResponseEntity<ProductDto> getProductById(@PathVariable String id){
         return ResponseEntity.ok(productService.getById(id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/id/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
     @Operation(summary = "Update a product by ID")
     public ResponseEntity<ProductDto> updateProductById(@PathVariable String id,
@@ -45,7 +45,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.updateById(id,productDto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
     @Operation(summary = "Delete a product by ID")
     public ResponseEntity<String> deleteProductById(@PathVariable String id){

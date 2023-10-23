@@ -32,13 +32,15 @@
 
     <!-- LOG everything at INFO level -->
     <root level="info">
-<!--        <appender-ref ref="RollingFile" />-->
         <appender-ref ref="Console" />
     </root>
 
     <logger name="com.ikubinfo.plumbershop" level="DEBUG" additivity="false">
-<!--        <appender-ref ref="RollingFile" />-->
         <appender-ref ref="Console" />
+    </logger>
+
+    <logger name="aspectLogging" level="INFO" additivity="false">
+                <appender-ref ref="RollingFile" />
     </logger>
 
 </configuration>

@@ -1,5 +1,6 @@
 package com.ikubinfo.plumbershop.config;
 
+import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
@@ -7,9 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
+
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -74,19 +74,12 @@ public class LoggingAspect {
     }
 
     private String getLoggedUserId(){
-        Authentication authentication =
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication();
-        if (authentication == null ||
-                !authentication.isAuthenticated() ||
-                authentication instanceof AnonymousAuthenticationToken
-        ) {
+        Authentication authentication = UtilClass.getAuthentication();
+        if (UtilClass.userIsNotLogged(authentication)) {
             return "anonymousUser";
-        }else {
-            CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
-            return principal.getId();
         }
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        return principal.getId();
     }
 
 }

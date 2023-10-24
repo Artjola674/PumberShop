@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(String id, CustomUserDetails loggedUser) {
-        checkIfUserCanPerformAction(id, loggedUser);
+        checkIfUserCanAccessUserData(id, loggedUser);
 
         UserDocument document = findUserById(id);
         return userMapper.toUserDto(document);
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateById(String id, UserDto userDto, CustomUserDetails loggedUser) {
-        checkIfUserCanPerformAction(id, loggedUser);
+        checkIfUserCanAccessUserData(id, loggedUser);
         UserDocument document = findUserById(id);
         if (!userDto.getEmail().equalsIgnoreCase(document.getEmail())
                 && userRepository.existsByEmail(userDto.getEmail())){
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()-> new ResourceNotFoundException(USER,ID, id));
     }
 
-    private void checkIfUserCanPerformAction(String id, CustomUserDetails loggedUser) {
+    private void checkIfUserCanAccessUserData(String id, CustomUserDetails loggedUser) {
         if (!UtilClass.userHasGivenRole(loggedUser,Role.ADMIN)
                 && !loggedUser.getId().equals(id)){
             throw new BadRequestException(ACTION_NOT_ALLOWED);

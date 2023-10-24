@@ -2,6 +2,8 @@ package com.ikubinfo.plumbershop.order.service.impl;
 
 import com.ikubinfo.plumbershop.common.service.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
+import com.ikubinfo.plumbershop.exception.BadRequestException;
+import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.order.dto.Bill;
 import com.ikubinfo.plumbershop.order.dto.OrderDto;
 import com.ikubinfo.plumbershop.order.mapper.OrderMapper;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
+import static com.ikubinfo.plumbershop.common.constants.BadRequest.ACTION_NOT_ALLOWED;
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
 import static com.ikubinfo.plumbershop.order.constants.OrderConstants.*;
 import static com.itextpdf.text.Rectangle.NO_BORDER;
@@ -88,6 +91,14 @@ public class OrderServiceImpl implements OrderService {
 
         return orderMapper.toOrderDto(savedOrder);
     }
+
+    @Override
+    public OrderDto getById(String id, CustomUserDetails loggedUser) {
+        OrderDocument orderDocument = getOrderDocumentById(id);
+        checkIfUserCanAccessOrder(loggedUser,orderDocument.getCustomer().getId());
+        return orderMapper.toOrderDto(orderDocument);
+    }
+
 
     private double calculateTotalProductsBuyingPrice(OrderDocument orderDocument) {
         return orderDocument.getOrderItems()
@@ -312,6 +323,20 @@ public class OrderServiceImpl implements OrderService {
 
     private String createRandomString() {
         return RandomStringUtils.randomAlphanumeric(12);
+    }
+
+
+    private OrderDocument getOrderDocumentById(String id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ORDER, ID, id));
+    }
+
+    private void checkIfUserCanAccessOrder( CustomUserDetails loggedUser,String customerId) {
+        if (!UtilClass.userHasGivenRole(loggedUser,Role.ADMIN)
+                && !UtilClass.userHasGivenRole(loggedUser,Role.SELLER)
+                && !loggedUser.getId().equals(customerId)){
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
     }
 
 

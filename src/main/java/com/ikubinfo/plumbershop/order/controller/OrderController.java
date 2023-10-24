@@ -11,10 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -31,5 +28,13 @@ public class OrderController {
     public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody OrderDto orderDto,
                                                 @CurrentUser CustomUserDetails loggedUser) throws DocumentException, IOException, MessagingException {
         return ResponseEntity.ok(orderService.save(orderDto, loggedUser));
+    }
+
+    @GetMapping("/id/{id}")
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "Get a order by ID")
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable String id,
+                                                 @CurrentUser CustomUserDetails loggedUser){
+        return ResponseEntity.ok(orderService.getById(id,loggedUser));
     }
 }

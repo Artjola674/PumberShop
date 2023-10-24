@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.order.constants;
 
 public class OrderConstants {
+    public static final String ORDER = "Order";
     public static final String PERCENTAGE = " %";
     public static final String DOLLAR = " $";
     public static final String BILL = "THE BILL";

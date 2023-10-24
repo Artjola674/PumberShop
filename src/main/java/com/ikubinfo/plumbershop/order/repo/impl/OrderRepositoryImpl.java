@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepository {
@@ -17,5 +19,11 @@ public class OrderRepositoryImpl implements OrderRepository {
 
         return mongoTemplate.save(document);
 
+    }
+
+    @Override
+    public Optional<OrderDocument> findById(String id) {
+        return Optional.ofNullable(
+                mongoTemplate.findById(id, OrderDocument.class));
     }
 }

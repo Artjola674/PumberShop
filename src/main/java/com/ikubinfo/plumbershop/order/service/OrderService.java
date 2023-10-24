@@ -9,4 +9,6 @@ import java.io.IOException;
 
 public interface OrderService {
     OrderDto save(OrderDto orderDto, CustomUserDetails loggedUser) throws DocumentException, IOException, MessagingException;
+
+    OrderDto getById(String id, CustomUserDetails loggedUser);
 }

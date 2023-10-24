@@ -2,6 +2,7 @@ package com.ikubinfo.plumbershop.user.dto;
 
 import com.ikubinfo.plumbershop.common.dto.BaseDto;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -17,7 +18,9 @@ public class UserDto extends BaseDto {
     private String password;
     @Pattern(regexp = "(^DEPARTMENT_ONE$|^DEPARTMENT_TWO$)",message = "Role must be 'DEPARTMENT_ONE', 'DEPARTMENT_TWO'")
     private String department;
+    @NotNull
     private String phone;
+    @NotNull
     private Address address;
     private double discountPercentage;
 

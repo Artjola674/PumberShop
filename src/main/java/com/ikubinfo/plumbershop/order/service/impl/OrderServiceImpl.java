@@ -1,11 +1,13 @@
 package com.ikubinfo.plumbershop.order.service.impl;
 
+import com.ikubinfo.plumbershop.common.dto.Filter;
 import com.ikubinfo.plumbershop.common.service.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.order.dto.Bill;
 import com.ikubinfo.plumbershop.order.dto.OrderDto;
+import com.ikubinfo.plumbershop.order.dto.OrderRequest;
 import com.ikubinfo.plumbershop.order.mapper.OrderMapper;
 import com.ikubinfo.plumbershop.order.model.OrderDocument;
 import com.ikubinfo.plumbershop.order.repo.OrderRepository;
@@ -27,6 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -93,10 +97,34 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Page<OrderDto> getAllOrders(CustomUserDetails loggedUser, OrderRequest request) {
+
+        Filter filter = request.getFilter();
+
+        Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
+                Sort.by(Sort.Direction.valueOf(filter.getSortType()),
+                        UtilClass.getSortField(UserDocument.class, filter.getSortBy())));
+
+        Criteria criteria = getCriteria(loggedUser, request);
+
+        return orderRepository.findAll(pageable,criteria).map(orderMapper::toOrderDto);
+
+    }
+
+    @Override
     public OrderDto getById(String id, CustomUserDetails loggedUser) {
         OrderDocument orderDocument = getOrderDocumentById(id);
         checkIfUserCanAccessOrder(loggedUser,orderDocument.getCustomer().getId());
         return orderMapper.toOrderDto(orderDocument);
+    }
+
+    @Override
+    public String deleteById(String id, CustomUserDetails loggedUser) {
+        if (!UtilClass.userHasGivenRole(loggedUser,Role.ADMIN)) {
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+        orderRepository.delete(getOrderDocumentById(id));
+        return DELETED_SUCCESSFULLY.replace(DOCUMENT,ORDER);
     }
 
 
@@ -337,6 +365,41 @@ public class OrderServiceImpl implements OrderService {
                 && !loggedUser.getId().equals(customerId)){
             throw new BadRequestException(ACTION_NOT_ALLOWED);
         }
+    }
+
+    private Criteria getCriteria(CustomUserDetails loggedUser, OrderRequest request) {
+        Criteria criteria = new Criteria();
+
+        getCustomeIdCriteria(loggedUser, request, criteria);
+
+        getDateCriteria(request, criteria);
+
+        return criteria;
+    }
+
+    private Criteria getDateCriteria(OrderRequest request, Criteria criteria) {
+        if (request.getToDate() != null && request.getFromDate() != null){
+            criteria.andOperator(Criteria.where("date").gte(request.getFromDate()),
+                    Criteria.where("date").lte(request.getToDate()));
+        } else {
+            if (request.getFromDate() != null){
+                criteria.and("date").gte(request.getFromDate());
+            }
+            if (request.getToDate() != null){
+                criteria.and("date").lte(request.getToDate());
+            }
+        }
+        return criteria;
+    }
+
+    private Criteria getCustomeIdCriteria(CustomUserDetails loggedUser, OrderRequest request, Criteria criteria) {
+        if (!UtilClass.userHasGivenRole(loggedUser,Role.ADMIN)
+                && !UtilClass.userHasGivenRole(loggedUser,Role.SELLER)){
+            criteria.and("customer.id").is(loggedUser.getId());
+        } else if (request.getCustomerId() != null){
+            criteria.and("customer.id").is(request.getCustomerId());
+        }
+        return criteria;
     }
 
 

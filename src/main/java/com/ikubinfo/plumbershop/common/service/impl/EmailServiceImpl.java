@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ikubinfo.plumbershop.common.constants.Constants.COMPANY_EMAIL;
 import static com.ikubinfo.plumbershop.common.constants.Constants.COMPANY_NAME;
 
 @Service
@@ -46,6 +47,20 @@ public class EmailServiceImpl implements EmailService {
 
     }
 
+    @Override
+    public void sendPerformanceIssueEmail(long executionTime, String methodName) {
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            String emailContent = buildPerformanceIssueBody(methodName, executionTime);
+            createMessageHelper(COMPANY_EMAIL,
+                    emailContent,"API Performance Alert", message);
+            mailSender.send(message);
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String buildOrderCreatedBody(UserDocument customer) throws IOException {
 
         String emailContent = getEmailContentFromFile("create-order.txt");
@@ -53,6 +68,18 @@ public class EmailServiceImpl implements EmailService {
         placeholders.put("FIRST_NAME", customer.getFirstName());
         placeholders.put("LAST_NAME", customer.getLastName());
         placeholders.put("COMPANY_NAME", COMPANY_NAME);
+
+        emailContent =  replacePlaceholders(placeholders,emailContent);
+        return emailContent;
+
+    }
+
+    private String buildPerformanceIssueBody(String methodName, long executionTime) throws IOException {
+
+        String emailContent = getEmailContentFromFile("performance-issue.txt");
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("METHOD_NAME", methodName);
+        placeholders.put("EXECUTION_TIME", Long.toString(executionTime));
 
         emailContent =  replacePlaceholders(placeholders,emailContent);
         return emailContent;

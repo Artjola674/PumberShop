@@ -40,7 +40,7 @@
     </logger>
 
     <logger name="aspectLogging" level="INFO" additivity="false">
-                <appender-ref ref="RollingFile" />
+        <appender-ref ref="RollingFile" />
     </logger>
 
 </configuration>

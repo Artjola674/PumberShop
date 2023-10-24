@@ -1,11 +1,13 @@
-package com.ikubinfo.plumbershop.config;
+package com.ikubinfo.plumbershop.aop;
 
+import com.ikubinfo.plumbershop.common.service.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
-import org.aspectj.lang.JoinPoint;
+import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,18 +21,20 @@ import static com.ikubinfo.plumbershop.common.constants.Constants.ID;
 
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class LoggingAspect {
+
+    private final EmailService emailService;
 
     private static final Logger logger =
             LoggerFactory.getLogger("aspectLogging");
 
 
-    @Before("com.ikubinfo.plumbershop.aop.PointcutContainer.beforeControllerPointcut()")
-    public void beforeController(JoinPoint joinPoint)  {
-
-
+    @Around("com.ikubinfo.plumbershop.aop.PointcutContainer.controllerPointcut()")
+    public Object aroundController(ProceedingJoinPoint joinPoint) throws Throwable {
 
         String loggedUserId = getLoggedUserId();
+        String methodName = joinPoint.getSignature().toShortString();
         String id = null;
         String requestMethod = null;
 
@@ -42,13 +46,21 @@ public class LoggingAspect {
             requestMethod = request.getMethod();
         }
 
-        String methodName = joinPoint.getSignature().getName();
 
-        String logMessage = String.format(
-                " --> User id: '%s', method name: '%s', request mapping type: '%s', ID: '%s'",
-                loggedUserId, methodName,requestMethod, id
-        );
-        logger.info(logMessage);
+        long startTime = System.currentTimeMillis();
+        Object result = joinPoint.proceed();
+
+        long executionTime = System.currentTimeMillis() - startTime;
+
+        logger.info(" --> User id: {}, method name: {}, request mapping type: {}, ID: {}, execution time: {} ms",
+                loggedUserId, methodName,requestMethod, id, executionTime);
+
+        long executionInSeconds = executionTime/1000;
+        if (executionInSeconds > 5){
+            emailService.sendPerformanceIssueEmail(executionInSeconds,methodName);
+        }
+
+        return result;
 
     }
 

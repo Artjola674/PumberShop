@@ -8,4 +8,6 @@ import java.io.IOException;
 public interface EmailService {
 
     void sendEmailWhenOrderIsCreated(OrderDocument order) throws MessagingException, IOException;
+
+    void sendPerformanceIssueEmail(long executionTime, String methodName);
 }

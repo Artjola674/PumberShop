@@ -31,8 +31,8 @@ public class GlobalExceptionHandler  {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(RefreshTokenException.class)
-    public ResponseEntity<?> handleRefreshTokenException(RefreshTokenException ex, WebRequest request) {
+    @ExceptionHandler(TokenException.class)
+    public ResponseEntity<?> handleTokenException(TokenException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(HttpStatus.FORBIDDEN.value(),
                 new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);

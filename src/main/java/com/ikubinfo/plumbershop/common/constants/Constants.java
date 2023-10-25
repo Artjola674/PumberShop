@@ -4,6 +4,7 @@ public class Constants {
     public static final String DOCUMENT = "#DOCUMENT";
     public static final String DELETED_SUCCESSFULLY = DOCUMENT + " deleted successfully";
     public static final String ID = "id";
+    public static final String TOKEN = "token";
     public static final String PLUMBER_SHOP = "PLUMBER_SHOP";
     public static final String EXTENSION = ".pdf";
     public static final String COMPANY_NAME = "Plumber Shop";
@@ -13,6 +14,7 @@ public class Constants {
     public static final String COMPANY_ADDRESS_POSTAL_CODE = "1003";
     public static final String COMPANY_ADDRESS_CITY = "Tirane";
     public static final String SPACE = " ";
+    public static final String INPUT_NOT_NULL = "Input should not be null";
 
 
 

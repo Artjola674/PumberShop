@@ -3,13 +3,15 @@ package com.ikubinfo.plumbershop.user.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import static com.ikubinfo.plumbershop.common.constants.Constants.INPUT_NOT_NULL;
+
 @Data
 public class Address {
 
-    @NotNull
+    @NotNull(message = INPUT_NOT_NULL)
     private String city;
-    @NotNull
+    @NotNull(message = INPUT_NOT_NULL)
     private Integer postalCode;
-    @NotNull
+    @NotNull(message = INPUT_NOT_NULL)
     private String street;
 }

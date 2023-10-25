@@ -3,6 +3,7 @@ package com.ikubinfo.plumbershop.user.controller;
 import com.ikubinfo.plumbershop.security.CurrentUser;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
+import com.ikubinfo.plumbershop.user.dto.ResetPasswordDto;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.dto.UserRequest;
 import com.ikubinfo.plumbershop.user.service.UserService;
@@ -62,9 +63,23 @@ public class UserController {
 
     @PatchMapping("/changePassword/id/{id}")
     @Operation(summary = "change password")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<String> changePassword(@PathVariable String id,
                                                  @Valid @RequestBody ChangePasswordDto changePasswordDto,
                                                  @CurrentUser CustomUserDetails loggedUser){
         return ResponseEntity.ok(userService.changePassword(changePasswordDto, loggedUser,id));
+    }
+
+    @PatchMapping("/forgetPassword")
+    @Operation(summary = "reset password")
+    public ResponseEntity<String> forgetPassword(@RequestParam String email){
+        return ResponseEntity.ok(userService.forgetPassword(email));
+    }
+
+    @PatchMapping("/resetPassword")
+    @Operation(summary = "reset password")
+    public ResponseEntity<String> resetPassword(@RequestParam String ticket,
+                                                @Valid @RequestBody ResetPasswordDto resetPasswordDto){
+        return ResponseEntity.ok(userService.resetPassword(resetPasswordDto, ticket));
     }
 }

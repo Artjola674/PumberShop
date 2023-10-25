@@ -17,10 +17,6 @@ public interface UserMapper {
             return document;
         }
 
-        document.setCreatedDate( dto.getCreatedDate() );
-        document.setLastModifiedDate( dto.getLastModifiedDate() );
-        document.setCreatedBy( dto.getCreatedBy() );
-        document.setLastModifiedBy( dto.getLastModifiedBy() );
         document.setFirstName( dto.getFirstName() );
         document.setLastName( dto.getLastName() );
         document.setEmail( dto.getEmail() );

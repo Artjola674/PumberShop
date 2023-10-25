@@ -1,22 +1,28 @@
 package com.ikubinfo.plumbershop.user.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.service.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
+import com.ikubinfo.plumbershop.user.dto.ResetPasswordDto;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.dto.UserRequest;
 import com.ikubinfo.plumbershop.user.enums.Role;
 import com.ikubinfo.plumbershop.user.mapper.UserMapper;
+import com.ikubinfo.plumbershop.user.model.ResetTokenDocument;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import com.ikubinfo.plumbershop.user.repo.UserRepository;
+import com.ikubinfo.plumbershop.user.service.ResetTokenService;
 import com.ikubinfo.plumbershop.user.service.UserService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 import static com.ikubinfo.plumbershop.common.constants.BadRequest.*;
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
@@ -28,10 +34,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+    private final ResetTokenService resetTokenService;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, ResetTokenService resetTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+        this.resetTokenService = resetTokenService;
         userMapper = Mappers.getMapper(UserMapper.class);
     }
 
@@ -122,7 +132,36 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
         userRepository.save(user);
 
-        return null;
+        return PASS_CHANGED_SUCCESSFULLY;
+    }
+
+    @Override
+    public String forgetPassword(String email) {
+        UserDocument user = getUserByEmail(email);
+
+        String token = UUID.randomUUID().toString();
+
+        resetTokenService.createPasswordResetTokenForUser(user, token);
+
+        emailService.sendForgetPasswordEmail(email,token);
+        return FORGET_PASS;
+    }
+
+    @Override
+    public String resetPassword(ResetPasswordDto resetPasswordDto, String token) {
+        checkIfPasswordsMatch(resetPasswordDto);
+        ResetTokenDocument resetTokenDocument = resetTokenService.verifyToken(token);
+        UserDocument user = resetTokenDocument.getUser();
+        user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+        userRepository.save(user);
+        return PASS_CHANGED_SUCCESSFULLY;
+    }
+
+    private void checkIfPasswordsMatch(ResetPasswordDto resetPasswordDto) {
+        if (!resetPasswordDto.getConfirmPassword().equals(resetPasswordDto.getNewPassword())){
+            throw new BadRequestException(PASSWORD_NOT_MATCH);
+        }
+
     }
 
     private void validateOldPassword(String oldPassword, String encodedPass) {

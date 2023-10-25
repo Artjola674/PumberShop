@@ -13,6 +13,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,6 @@ import static com.ikubinfo.plumbershop.common.constants.Constants.COMPANY_NAME;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-
 
     @Override
     public void sendEmailWhenOrderIsCreated(OrderDocument order) throws MessagingException, IOException {
@@ -59,6 +59,31 @@ public class EmailServiceImpl implements EmailService {
         } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void sendForgetPasswordEmail(String email, String token) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            String emailContent = buildResetPasswordEmailBody(token);
+            createMessageHelper(email,
+                    emailContent,"Reset password", message);
+            mailSender.send(message);
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String buildResetPasswordEmailBody( String token) throws IOException {
+        String emailContent = getEmailContentFromFile("reset-password.txt");
+
+        String link = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString()+
+                "/api/v1/users/resetPassword?ticket="+token;
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("RESET_PASS_LINK", link);
+
+        emailContent =  replacePlaceholders(placeholders,emailContent);
+        return emailContent;
     }
 
     private String buildOrderCreatedBody(UserDocument customer) throws IOException {

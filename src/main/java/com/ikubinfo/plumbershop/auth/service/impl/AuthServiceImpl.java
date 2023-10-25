@@ -5,7 +5,7 @@ import com.ikubinfo.plumbershop.auth.dto.AuthResponse;
 import com.ikubinfo.plumbershop.auth.model.RefreshToken;
 import com.ikubinfo.plumbershop.auth.repo.RefreshTokenRepository;
 import com.ikubinfo.plumbershop.auth.service.AuthService;
-import com.ikubinfo.plumbershop.exception.RefreshTokenException;
+import com.ikubinfo.plumbershop.exception.TokenException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.security.JwtTokenProvider;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.ikubinfo.plumbershop.auth.constants.Constants.*;
+import static com.ikubinfo.plumbershop.common.constants.Constants.TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
     public void verifyExpiration(RefreshToken refreshToken) {
         if (refreshToken.getExpirationDate().toInstant().isBefore(new Date().toInstant())) {
             refreshTokenRepository.delete(refreshToken);
-            throw new RefreshTokenException(refreshToken.getToken(),
+            throw new TokenException(refreshToken.getToken(),
                     REFRESH_TOKEN_EXPIRED);
         }
     }

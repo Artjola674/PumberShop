@@ -7,10 +7,9 @@ import static com.ikubinfo.plumbershop.user.constants.UserConstants.PASS_VALIDAT
 import static com.ikubinfo.plumbershop.user.constants.UserConstants.PASS_VALIDATE_REGEX;
 
 @Data
-public class ChangePasswordDto {
-
-    @Pattern(regexp = PASS_VALIDATE_REGEX, message = PASS_VALIDATE_MESSAGE)
-    private String oldPassword;
+public class ResetPasswordDto {
     @Pattern(regexp = PASS_VALIDATE_REGEX, message = PASS_VALIDATE_MESSAGE)
     private String newPassword;
+    @Pattern(regexp = PASS_VALIDATE_REGEX, message = PASS_VALIDATE_MESSAGE)
+    private String confirmPassword;
 }

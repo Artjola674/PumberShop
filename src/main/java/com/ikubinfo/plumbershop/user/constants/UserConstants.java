@@ -11,7 +11,7 @@ public class UserConstants {
     public static final String PASS_VALIDATE_MESSAGE = "Password should have at least "
             + "8 characters and at most 32 characters. it should contain a digit, a lower case alphabet, an upper case alphabet and a special character.";
 
-    public static final String PASS_VALIDATE_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&;+.=])(?=\\S+$).{8,32}$";
+    public static final String PASS_VALIDATE_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+.!])(?=\\S+$).{8,32}$";
     private UserConstants() {
     }
 }

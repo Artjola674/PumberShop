@@ -1,15 +1,12 @@
 package com.ikubinfo.plumbershop.user.dto;
 
-import jakarta.validation.constraints.Pattern;
+import com.ikubinfo.plumbershop.common.annotation.Password;
 import lombok.Data;
-
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.PASS_VALIDATE_MESSAGE;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.PASS_VALIDATE_REGEX;
 
 @Data
 public class ResetPasswordDto {
-    @Pattern(regexp = PASS_VALIDATE_REGEX, message = PASS_VALIDATE_MESSAGE)
+    @Password
     private String newPassword;
-    @Pattern(regexp = PASS_VALIDATE_REGEX, message = PASS_VALIDATE_MESSAGE)
+    @Password
     private String confirmPassword;
 }

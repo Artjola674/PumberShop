@@ -1,5 +1,6 @@
 package com.ikubinfo.plumbershop.user.dto;
 
+import com.ikubinfo.plumbershop.common.annotation.Password;
 import com.ikubinfo.plumbershop.common.dto.BaseDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -8,8 +9,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import static com.ikubinfo.plumbershop.common.constants.Constants.INPUT_NOT_NULL;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.PASS_VALIDATE_MESSAGE;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.PASS_VALIDATE_REGEX;
 
 @Data
 public class UserDto extends BaseDto {
@@ -23,8 +22,7 @@ public class UserDto extends BaseDto {
     private String email;
     @Pattern(regexp = "(^ADMIN$|^SELLER$|^PLUMBER$|^USER$)",message = "Role must be 'ADMIN', 'SELLER', 'USER' or 'PLUMBER'")
     private String role;
-    @Pattern(regexp = PASS_VALIDATE_REGEX, message = PASS_VALIDATE_MESSAGE)
-    @NotNull(message = INPUT_NOT_NULL)
+    @Password
     private String password;
     @Pattern(regexp = "(^DEPARTMENT_ONE$|^DEPARTMENT_TWO$)",message = "Role must be 'DEPARTMENT_ONE', 'DEPARTMENT_TWO'")
     private String department;

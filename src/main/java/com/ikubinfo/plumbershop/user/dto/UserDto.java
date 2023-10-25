@@ -22,7 +22,7 @@ public class UserDto extends BaseDto {
     private String email;
     @Pattern(regexp = "(^ADMIN$|^SELLER$|^PLUMBER$|^USER$)",message = "Role must be 'ADMIN', 'SELLER', 'USER' or 'PLUMBER'")
     private String role;
-    @Password
+    @Password(allowNull = true)
     private String password;
     @Pattern(regexp = "(^DEPARTMENT_ONE$|^DEPARTMENT_TWO$)",message = "Role must be 'DEPARTMENT_ONE', 'DEPARTMENT_TWO'")
     private String department;

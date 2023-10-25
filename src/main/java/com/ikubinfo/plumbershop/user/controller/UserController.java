@@ -2,6 +2,7 @@ package com.ikubinfo.plumbershop.user.controller;
 
 import com.ikubinfo.plumbershop.security.CurrentUser;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
+import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.dto.UserRequest;
 import com.ikubinfo.plumbershop.user.service.UserService;
@@ -57,5 +58,13 @@ public class UserController {
     @Operation(summary = "Delete a user by ID")
     public ResponseEntity<String> deleteUserById(@PathVariable String id){
         return ResponseEntity.ok(userService.deleteById(id));
+    }
+
+    @PatchMapping("/changePassword/id/{id}")
+    @Operation(summary = "change password")
+    public ResponseEntity<String> changePassword(@PathVariable String id,
+                                                 @Valid @RequestBody ChangePasswordDto changePasswordDto,
+                                                 @CurrentUser CustomUserDetails loggedUser){
+        return ResponseEntity.ok(userService.changePassword(changePasswordDto, loggedUser,id));
     }
 }

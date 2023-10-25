@@ -5,6 +5,7 @@ import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
+import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.dto.UserRequest;
 import com.ikubinfo.plumbershop.user.enums.Role;
@@ -17,9 +18,8 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.ikubinfo.plumbershop.common.constants.BadRequest.ACTION_NOT_ALLOWED;
+import static com.ikubinfo.plumbershop.common.constants.BadRequest.*;
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
-import static com.ikubinfo.plumbershop.common.constants.BadRequest.EMAIL_EXISTS;
 import static com.ikubinfo.plumbershop.user.constants.UserConstants.*;
 
 @Service
@@ -110,6 +110,25 @@ public class UserServiceImpl implements UserService {
     public UserDocument getUserByEmail(String email){
         return  userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, email));
+    }
+
+    @Override
+    public String changePassword(ChangePasswordDto changePasswordDto, CustomUserDetails loggedUser, String userId) {
+        if (!userId.equals(loggedUser.getId())){
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+        UserDocument user = findUserById(userId);
+        validateOldPassword(changePasswordDto.getOldPassword(),user.getPassword());
+        user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+        userRepository.save(user);
+
+        return null;
+    }
+
+    private void validateOldPassword(String oldPassword, String encodedPass) {
+        if (!passwordEncoder.matches(oldPassword,encodedPass)){
+            throw new BadRequestException(PASS_NOT_CORRECT);
+        }
     }
 
     private UserDocument findUserById(String id) {

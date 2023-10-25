@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.user.service;
 
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
+import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.dto.UserRequest;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
@@ -22,4 +23,5 @@ public interface UserService {
     UserDocument getUserByEmail(String email);
 
 
+    String changePassword(ChangePasswordDto changePasswordDto, CustomUserDetails loggedUser, String userId);
 }

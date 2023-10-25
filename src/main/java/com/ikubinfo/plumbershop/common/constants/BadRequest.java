@@ -7,6 +7,7 @@ public class BadRequest {
     public static final String EMPTY_CLAIMS = "JWT claims string is empty.";
     public static final String ACTION_NOT_ALLOWED = "Action not allowed for this user";
     public static final String EMAIL_EXISTS = "There is already one account with that email address: ";
+    public static final String PASS_NOT_CORRECT = "Existing password is not correct";
 
 
     private BadRequest() {

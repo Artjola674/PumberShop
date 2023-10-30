@@ -98,6 +98,14 @@
 			<version>2.14.0</version>
 		</dependency>
 
+
+		<dependency>
+			<groupId>org.optaplanner</groupId>
+			<artifactId>optaplanner-core</artifactId>
+			<version>9.44.0.Final</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

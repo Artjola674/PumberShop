@@ -8,6 +8,8 @@ import com.ikubinfo.plumbershop.user.dto.UserRequest;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface UserService {
 
 
@@ -28,4 +30,6 @@ public interface UserService {
     String forgetPassword(String email);
 
     String resetPassword(ResetPasswordDto resetPasswordDto, String token);
+
+    List<UserDocument> getAllSellers();
 }

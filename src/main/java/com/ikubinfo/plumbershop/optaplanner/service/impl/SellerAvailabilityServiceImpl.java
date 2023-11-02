@@ -5,7 +5,7 @@ import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.optaplanner.dto.SellerAvailabilityDto;
 import com.ikubinfo.plumbershop.optaplanner.mapper.SellerAvailabilityMapper;
-import com.ikubinfo.plumbershop.optaplanner.model.SellerAvailability;
+import com.ikubinfo.plumbershop.optaplanner.model.SellerAvailabilityDocument;
 import com.ikubinfo.plumbershop.optaplanner.repo.SellerAvailabilityRepository;
 import com.ikubinfo.plumbershop.optaplanner.service.SellerAvailabilityService;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
@@ -35,13 +35,13 @@ public class SellerAvailabilityServiceImpl implements SellerAvailabilityService 
 
     @Override
     public SellerAvailabilityDto create(SellerAvailabilityDto dto) {
-        SellerAvailability doc = mapper.toDocument(dto);
+        SellerAvailabilityDocument doc = mapper.toDocument(dto);
         sellerAvailabilityRepository.save(doc);
         return mapper.toDto(doc);
     }
 
     @Override
-    public List<SellerAvailability> findAllByDates(LocalDateTime startDate, LocalDateTime endDate) {
+    public List<SellerAvailabilityDocument> findAllByDates(LocalDateTime startDate, LocalDateTime endDate) {
         return sellerAvailabilityRepository
                 .findByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(startDate,endDate);
     }
@@ -56,14 +56,14 @@ public class SellerAvailabilityServiceImpl implements SellerAvailabilityService 
 
     @Override
     public SellerAvailabilityDto getById(String id) {
-        SellerAvailability availability = findById(id);
+        SellerAvailabilityDocument availability = findById(id);
         return mapper.toDto(availability);
     }
 
     @Override
     public SellerAvailabilityDto updateById(String id, SellerAvailabilityDto availabilityDto) {
-        SellerAvailability availability = findById(id);
-        SellerAvailability updated = sellerAvailabilityRepository.save(mapper
+        SellerAvailabilityDocument availability = findById(id);
+        SellerAvailabilityDocument updated = sellerAvailabilityRepository.save(mapper
                 .updateAvailabilityFromDto(availabilityDto,availability));
         return mapper.toDto(updated);
     }
@@ -74,7 +74,7 @@ public class SellerAvailabilityServiceImpl implements SellerAvailabilityService 
         return DELETED_SUCCESSFULLY.replace(DOCUMENT,SELLER_AVAILABILITY);
     }
 
-    private SellerAvailability findById(String id) {
+    private SellerAvailabilityDocument findById(String id) {
         return sellerAvailabilityRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(SELLER_AVAILABILITY,ID, id));
     }

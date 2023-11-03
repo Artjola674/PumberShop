@@ -8,6 +8,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -49,45 +50,38 @@ public class EmployeeSchedulingConstraintProvider implements ConstraintProvider 
     }
 
     Constraint unavailableEmployee(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(ShiftDocument.class)
-                .join(SellerAvailabilityDocument.class,
-                        Joiners.lessThan(ShiftDocument::getStartDateTime, SellerAvailabilityDocument::getEndDateTime),
-                        Joiners.greaterThan(ShiftDocument::getEndDateTime, SellerAvailabilityDocument::getStartDateTime),
-                        Joiners.equal(ShiftDocument::getSeller, SellerAvailabilityDocument::getSeller))
-                .filter((shift, availability) -> availability.getSellerAvailabilityState() == SellerAvailabilityState.UNAVAILABLE)
+        return getConstraintStreamWithAvailabilityIntersections(constraintFactory,SellerAvailabilityState.UNAVAILABLE)
                 .penalize(HardSoftScore.ONE_HARD,
-                        (shift, availability) -> getShiftDurationInMinutes(shift))
+                        ( availability, shift) -> getShiftDurationInMinutes(shift))
                 .asConstraint("Unavailable employee");
     }
 
     Constraint desiredDayForEmployee(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(ShiftDocument.class)
-                .join(SellerAvailabilityDocument.class,
-                        Joiners.lessThan(ShiftDocument::getStartDateTime, SellerAvailabilityDocument::getEndDateTime),
-                        Joiners.greaterThan(ShiftDocument::getEndDateTime, SellerAvailabilityDocument::getStartDateTime),
-                        Joiners.equal(ShiftDocument::getSeller, SellerAvailabilityDocument::getSeller))
-                .filter((shift, availability) -> availability.getSellerAvailabilityState() == SellerAvailabilityState.DESIRED)
+        return getConstraintStreamWithAvailabilityIntersections(constraintFactory,SellerAvailabilityState.DESIRED)
                 .reward(HardSoftScore.ONE_SOFT,
-                        (shift, availability) -> getShiftDurationInMinutes(shift))
+                        ( availability, shift) -> getShiftDurationInMinutes(shift))
                 .asConstraint("Desired day for employee");
     }
 
     Constraint undesiredDayForEmployee(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(ShiftDocument.class)
-                .join(SellerAvailabilityDocument.class,
-                        Joiners.lessThan(ShiftDocument::getStartDateTime, SellerAvailabilityDocument::getEndDateTime),
-                        Joiners.greaterThan(ShiftDocument::getEndDateTime, SellerAvailabilityDocument::getStartDateTime),
-                        Joiners.equal(ShiftDocument::getSeller, SellerAvailabilityDocument::getSeller))
-                .filter((shift, availability) -> availability.getSellerAvailabilityState() == SellerAvailabilityState.UNDESIRED)
+
+        return getConstraintStreamWithAvailabilityIntersections(constraintFactory,SellerAvailabilityState.UNDESIRED)
                 .penalize(HardSoftScore.ONE_SOFT,
-                        (shift, availability) -> getShiftDurationInMinutes(shift))
+                        ( availability, shift) -> getShiftDurationInMinutes(shift))
                 .asConstraint("Undesired day for employee");
     }
 
+    private static BiConstraintStream<SellerAvailabilityDocument, ShiftDocument> getConstraintStreamWithAvailabilityIntersections(
+            ConstraintFactory constraintFactory, SellerAvailabilityState employeeAvailabilityState) {
+        return constraintFactory.forEach(SellerAvailabilityDocument.class)
+                .filter( availability -> availability.getSellerAvailabilityState() == employeeAvailabilityState)
+                .join(ShiftDocument.class,
+                        Joiners.lessThan(SellerAvailabilityDocument::getEndDateTime, ShiftDocument::getStartDateTime),
+                        Joiners.greaterThan( SellerAvailabilityDocument::getStartDateTime, ShiftDocument::getEndDateTime),
+                        Joiners.equal( SellerAvailabilityDocument::getSeller, ShiftDocument::getSeller));
+    }
+
     private static int getMinuteOverlap(ShiftDocument shift1, ShiftDocument shift2) {
-        // The overlap of two timeslot occurs in the range common to both timeslots.
-        // Both timeslots are active after the higher of their two start times,
-        // and before the lower of their two end times.
         LocalDateTime shift1Start = shift1.getStartDateTime();
         LocalDateTime shift1End = shift1.getEndDateTime();
         LocalDateTime shift2Start = shift2.getStartDateTime();

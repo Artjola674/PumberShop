@@ -11,6 +11,7 @@ import com.ikubinfo.plumbershop.optaplanner.service.ScheduleService;
 import com.ikubinfo.plumbershop.optaplanner.service.ShiftService;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import com.ikubinfo.plumbershop.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -21,6 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Service
+@Slf4j
 public class ScheduleServiceImpl implements ScheduleService {
 
     private final SolverManager<ScheduleDocument, String> solverManager;

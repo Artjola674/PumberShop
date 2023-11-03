@@ -36,7 +36,7 @@ public class PlumberShopApplication {
 				.withSolutionClass(ScheduleDocument.class)
 				.withEntityClasses(ShiftDocument.class)
 				.withConstraintProviderClass(EmployeeSchedulingConstraintProvider.class)
-				.withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L));
+				.withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(10L));
 		return SolverManager.create(solverConfig, new SolverManagerConfig());
 	}
 

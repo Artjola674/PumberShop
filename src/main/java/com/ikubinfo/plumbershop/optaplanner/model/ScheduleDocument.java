@@ -9,7 +9,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.solver.SolverStatus;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -32,5 +31,4 @@ public class ScheduleDocument extends BaseDocument {
     @PlanningScore
     HardSoftScore score;
 
-    SolverStatus solverStatus;
 }

@@ -10,18 +10,22 @@ import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
 import com.ikubinfo.plumbershop.user.dto.ResetPasswordDto;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.dto.UserRequest;
+import com.ikubinfo.plumbershop.user.enums.Department;
 import com.ikubinfo.plumbershop.user.enums.Role;
 import com.ikubinfo.plumbershop.user.mapper.UserMapper;
+import com.ikubinfo.plumbershop.user.model.QUserDocument;
 import com.ikubinfo.plumbershop.user.model.ResetTokenDocument;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import com.ikubinfo.plumbershop.user.repo.UserRepository;
 import com.ikubinfo.plumbershop.user.service.ResetTokenService;
 import com.ikubinfo.plumbershop.user.service.UserService;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.ikubinfo.plumbershop.common.constants.BadRequest.*;
@@ -74,20 +78,12 @@ public class UserServiceImpl implements UserService {
                 Sort.by(Sort.Direction.valueOf(filter.getSortType()),
                         UtilClass.getSortField(UserDocument.class, filter.getSortBy())));
 
-//        UserDocument example = UserDocument.builder().email(userRequest.getEmail()).build();
-//        ExampleMatcher exampleMatcher = ExampleMatcher
-//                .matchingAny()
-//                .withMatcher("email",match->match.startsWith());
-//        Page<UserDocument> page = userRequest.getEmail() != null
-//        ? userRepository.findAll(Example.of(example,exampleMatcher),pageable)
-//        : userRepository.findAll(pageable);
+        QUserDocument qUser = new QUserDocument(USER_DOCUMENT);
+        BooleanExpression predicate = hasEmail(userRequest.getEmail(), qUser)
+                .and(hasDepartment(userRequest.getDepartment(),qUser))
+                .and(hasRole(userRequest.getRole(),qUser));
 
-        Page<UserDocument> page = userRequest.getEmail() != null
-                ? userRepository.findPageByEmailStartingWith(userRequest.getEmail(), pageable)
-                : userRepository.findAll(pageable);
-
-
-        return page.map(userMapper::toUserDto);
+        return userRepository.findAll(predicate,pageable).map(userMapper::toUserDto);
     }
 
     @Override
@@ -157,6 +153,11 @@ public class UserServiceImpl implements UserService {
         return PASS_CHANGED_SUCCESSFULLY;
     }
 
+    @Override
+    public List<UserDocument> getAllSellers() {
+        return userRepository.findAllByRole(Role.SELLER);
+    }
+
     private void checkIfPasswordsMatch(ResetPasswordDto resetPasswordDto) {
         if (!resetPasswordDto.getConfirmPassword().equals(resetPasswordDto.getNewPassword())){
             throw new BadRequestException(PASSWORD_NOT_MATCH);
@@ -182,6 +183,22 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private BooleanExpression hasEmail(String email, QUserDocument qUser){
+        return email == null
+                ? qUser.id.isNotNull()
+                : qUser.email.likeIgnoreCase(email);
+    }
 
+    private BooleanExpression hasDepartment(String department, QUserDocument qUser){
+        return department == null
+                ? qUser.id.isNotNull()
+                : qUser.department.eq(Enum.valueOf(Department.class,department));
+    }
+
+    private BooleanExpression hasRole(String role, QUserDocument qUser){
+        return role == null
+                ? qUser.id.isNotNull()
+                : qUser.role.eq(Enum.valueOf( Role.class, role ));
+    }
 
 }

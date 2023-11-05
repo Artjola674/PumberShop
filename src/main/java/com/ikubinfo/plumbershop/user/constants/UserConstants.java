@@ -4,6 +4,7 @@ public class UserConstants {
 
     public static final String USER = "user";
     public static final String USERNAME = "username";
+    public static final String USER_DOCUMENT = "userDocument";
     public static final String PASS_CHANGED_SUCCESSFULLY = "Your password has been changed successfully";
     public static final String FORGET_PASS = "Check your email for instructions to reset your password";
     public static final String RESET_TOKEN = "Reset token";

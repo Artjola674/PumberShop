@@ -15,6 +15,7 @@ public class Constants {
     public static final String COMPANY_ADDRESS_CITY = "Tirane";
     public static final String SPACE = " ";
     public static final String INPUT_NOT_NULL = "Input should not be null";
+    public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
 
 

@@ -5,6 +5,7 @@ import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
 import com.ikubinfo.plumbershop.user.dto.ResetPasswordDto;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
 import com.ikubinfo.plumbershop.user.dto.UserRequest;
+import com.ikubinfo.plumbershop.user.enums.Role;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import org.springframework.data.domain.Page;
 
@@ -31,5 +32,5 @@ public interface UserService {
 
     String resetPassword(ResetPasswordDto resetPasswordDto, String token);
 
-    List<UserDocument> getAllSellers();
+    List<UserDocument> getAllUsersBasedOnRole(Role role);
 }

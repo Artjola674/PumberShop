@@ -22,18 +22,18 @@ public class ScheduleDocument extends BaseDocument {
 
     @ProblemFactCollectionProperty
     @DBRef
-    List<SellerAvailabilityDocument> availabilityList;
+    private List<SellerAvailabilityDocument> availabilityList;
 
     @ProblemFactCollectionProperty
     @ValueRangeProvider
     @DBRef
-    List<UserDocument> employeeList;
+    private List<UserDocument> employeeList;
 
     @PlanningEntityCollectionProperty
-    List<ShiftDocument> shiftList;
+    private List<ShiftDocument> shiftList;
 
     @PlanningScore
     @Transient
-    HardSoftScore score;
+    private HardSoftScore score;
 
 }

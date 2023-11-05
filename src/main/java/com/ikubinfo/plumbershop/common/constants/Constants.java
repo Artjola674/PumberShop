@@ -6,7 +6,8 @@ public class Constants {
     public static final String ID = "id";
     public static final String TOKEN = "token";
     public static final String PLUMBER_SHOP = "PLUMBER_SHOP";
-    public static final String EXTENSION = ".pdf";
+    public static final String EXTENSION_PDF = ".pdf";
+    public static final String EXTENSION_XLSX = ".xlsx";
     public static final String COMPANY_NAME = "Plumber Shop";
     public static final String COMPANY_EMAIL = "artjola.kotorri@ikubinfo.al";
     public static final String COMPANY_NID = "A12345678L";

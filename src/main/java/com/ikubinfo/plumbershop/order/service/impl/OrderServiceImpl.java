@@ -26,7 +26,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
@@ -158,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
 
     private void generateBill(OrderDocument order) throws DocumentException, FileNotFoundException {
 
-        String filename = createRandomString() + EXTENSION;
+        String filename = UtilClass.createRandomString() + EXTENSION_PDF;
 
         setBillDocToOrder(order, filename);
 
@@ -169,6 +168,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void createDocument(OrderDocument order, String filename) throws DocumentException, FileNotFoundException {
+
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream(documentPath + filename));
 
@@ -349,9 +349,7 @@ public class OrderServiceImpl implements OrderService {
         order.setBill(bill);
     }
 
-    private String createRandomString() {
-        return RandomStringUtils.randomAlphanumeric(12);
-    }
+
 
 
     private OrderDocument getOrderDocumentById(String id) {

@@ -154,8 +154,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDocument> getAllSellers() {
-        return userRepository.findAllByRole(Role.SELLER);
+    public List<UserDocument> getAllUsersBasedOnRole(Role role) {
+        return userRepository.findAllByRole(role);
     }
 
     private void checkIfPasswordsMatch(ResetPasswordDto resetPasswordDto) {

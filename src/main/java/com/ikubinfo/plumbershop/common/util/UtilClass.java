@@ -2,6 +2,7 @@ package com.ikubinfo.plumbershop.common.util;
 
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import com.ikubinfo.plumbershop.user.enums.Role;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,6 +33,11 @@ public class UtilClass {
                 !authentication.isAuthenticated() ||
                 authentication instanceof AnonymousAuthenticationToken);
     }
+
+    public static String createRandomString() {
+        return RandomStringUtils.randomAlphanumeric(12);
+    }
+
 
     private static <T> boolean fieldExistsInClass(Class<T> tClass, String field) {
         return stream(tClass.getDeclaredFields())

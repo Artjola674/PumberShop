@@ -18,7 +18,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.ikubinfo.plumbershop.common.constants.Constants.COMPANY_EMAIL;
@@ -38,7 +40,7 @@ public class EmailServiceImpl implements EmailService {
 
             MimeMessage message = mailSender.createMimeMessage();
 
-            MimeMessageHelper helper = createMessageHelper(order.getCustomer().getEmail(),
+            MimeMessageHelper helper = createMessageHelper(new String[]{order.getCustomer().getEmail()},
                     emailContent,"Order Confirmation", message);
 
             addAttachment(order.getBill().getFileLocation()+ order.getBill().getFileName(),
@@ -53,7 +55,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             String emailContent = buildPerformanceIssueBody(methodName, executionTime);
-            createMessageHelper(COMPANY_EMAIL,
+            createMessageHelper(new String[]{COMPANY_EMAIL},
                     emailContent,"API Performance Alert", message);
             mailSender.send(message);
         } catch (MessagingException | IOException e) {
@@ -66,12 +68,34 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             String emailContent = buildResetPasswordEmailBody(token);
-            createMessageHelper(email,
+            createMessageHelper(new String[]{email},
                     emailContent,"Reset password", message);
             mailSender.send(message);
         } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void sendScheduleToEmail(String documentPath, String filename, List<String> emails) {
+
+        try {
+            String emailContent = getEmailContentFromFile("create-schedule.txt");
+
+            MimeMessage message = mailSender.createMimeMessage();
+
+            MimeMessageHelper helper = createMessageHelper(emails.toArray(new String[emails.size()]),
+                    emailContent,"Schedule", message);
+
+            addAttachment(documentPath + filename, filename, helper);
+
+            mailSender.send(message);
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+            log.error("Something went wrong while sending email");
+        }
+
+
     }
 
     private String buildResetPasswordEmailBody( String token) throws IOException {
@@ -111,11 +135,11 @@ public class EmailServiceImpl implements EmailService {
 
     }
 
-    private MimeMessageHelper createMessageHelper(String email, String emailContent,
+    private MimeMessageHelper createMessageHelper(String[] emails, String emailContent,
                                                   String subject, MimeMessage message) throws MessagingException {
 
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setTo(email);
+        helper.setTo(emails);
         helper.setSubject(subject);
         helper.setText(emailContent);
         return helper;

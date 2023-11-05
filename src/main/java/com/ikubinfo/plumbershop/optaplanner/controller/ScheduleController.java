@@ -21,7 +21,8 @@ public class ScheduleController {
     @PostMapping("/solve")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "schedule shifts")
-    public ResponseEntity<ScheduleDto> solve(@RequestBody Integer numberOfDays) {
+    public ResponseEntity<ScheduleDto> solve( @RequestParam(name = "numberOfDays", required = false, defaultValue = "7")
+                                                  Integer numberOfDays) {
 
         return ResponseEntity.ok(sellerScheduleService.solve(numberOfDays));
     }

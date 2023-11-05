@@ -27,8 +27,6 @@ public class ShiftServiceImpl implements ShiftService {
     @Value("${second-shift-end-time}")
     private int secondShiftEndHour;
 
-    // Get the current date
-
 
     @Override
     public List<ShiftDocument> createShiftList(int daysAfterToday) {

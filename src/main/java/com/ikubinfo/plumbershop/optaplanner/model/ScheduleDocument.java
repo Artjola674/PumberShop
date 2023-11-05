@@ -9,6 +9,8 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -19,16 +21,19 @@ import java.util.List;
 public class ScheduleDocument extends BaseDocument {
 
     @ProblemFactCollectionProperty
+    @DBRef
     List<SellerAvailabilityDocument> availabilityList;
 
     @ProblemFactCollectionProperty
     @ValueRangeProvider
+    @DBRef
     List<UserDocument> employeeList;
 
     @PlanningEntityCollectionProperty
     List<ShiftDocument> shiftList;
 
     @PlanningScore
+    @Transient
     HardSoftScore score;
 
 }

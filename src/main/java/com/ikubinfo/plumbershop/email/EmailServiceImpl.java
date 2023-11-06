@@ -1,6 +1,6 @@
-package com.ikubinfo.plumbershop.common.service.impl;
+package com.ikubinfo.plumbershop.email;
 
-import com.ikubinfo.plumbershop.common.service.EmailService;
+import com.ikubinfo.plumbershop.email.EmailService;
 
 import com.ikubinfo.plumbershop.order.model.OrderDocument;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
@@ -18,7 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

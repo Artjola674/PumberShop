@@ -1,4 +1,4 @@
-package com.ikubinfo.plumbershop.common.annotation;
+package com.ikubinfo.plumbershop.annotation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.user.dto;
 
-import com.ikubinfo.plumbershop.common.annotation.Password;
+import com.ikubinfo.plumbershop.annotation.Password;
 import com.ikubinfo.plumbershop.common.dto.BaseDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

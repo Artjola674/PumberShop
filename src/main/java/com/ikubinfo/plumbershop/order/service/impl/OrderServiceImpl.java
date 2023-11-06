@@ -1,7 +1,7 @@
 package com.ikubinfo.plumbershop.order.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.Filter;
-import com.ikubinfo.plumbershop.common.service.EmailService;
+import com.ikubinfo.plumbershop.email.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;

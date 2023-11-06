@@ -1,4 +1,4 @@
-package com.ikubinfo.plumbershop.common.service;
+package com.ikubinfo.plumbershop.email;
 
 import com.ikubinfo.plumbershop.order.model.OrderDocument;
 import jakarta.mail.MessagingException;

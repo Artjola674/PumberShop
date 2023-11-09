@@ -2,13 +2,10 @@ package com.ikubinfo.plumbershop.product.model;
 
 import com.ikubinfo.plumbershop.common.model.BaseDocument;
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
 @Data
-@Document
-//@QueryEntity
 public class ProductDocument extends BaseDocument {
 
     private String name;

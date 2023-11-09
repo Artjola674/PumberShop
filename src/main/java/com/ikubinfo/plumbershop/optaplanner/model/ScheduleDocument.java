@@ -11,13 +11,11 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @PlanningSolution
 @Data
-@Document
 public class ScheduleDocument extends BaseDocument {
 
     @ProblemFactCollectionProperty

@@ -9,6 +9,6 @@ public class Filter {
     private int pageSize = 5;
     @Pattern(regexp = "(^DESC$|^ASC$)", message = "Sort type must be 'DESC' or 'ASC'")
     private String sortType = "DESC";
-    private String sortBy = "ID";
+    private String sortBy = "id";
 
 }

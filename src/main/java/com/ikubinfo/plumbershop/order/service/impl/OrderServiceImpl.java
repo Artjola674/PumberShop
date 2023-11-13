@@ -102,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
 
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
                 Sort.by(Sort.Direction.valueOf(filter.getSortType()),
-                        UtilClass.getSortField(UserDocument.class, filter.getSortBy())));
+                        UtilClass.getSortField(OrderDocument.class, filter.getSortBy())));
 
         Criteria criteria = getCriteria(loggedUser, request);
 

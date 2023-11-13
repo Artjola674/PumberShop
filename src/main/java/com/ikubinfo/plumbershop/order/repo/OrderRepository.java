@@ -17,4 +17,7 @@ public interface OrderRepository {
 
     void delete(OrderDocument orderDocument);
 
+    void deleteAll();
+
+
 }

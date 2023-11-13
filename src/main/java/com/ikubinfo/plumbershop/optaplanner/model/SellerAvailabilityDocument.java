@@ -3,11 +3,13 @@ package com.ikubinfo.plumbershop.optaplanner.model;
 import com.ikubinfo.plumbershop.common.model.BaseDocument;
 import com.ikubinfo.plumbershop.optaplanner.enums.SellerAvailabilityState;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class SellerAvailabilityDocument extends BaseDocument {
     private UserDocument seller;
     private LocalDateTime startDateTime;

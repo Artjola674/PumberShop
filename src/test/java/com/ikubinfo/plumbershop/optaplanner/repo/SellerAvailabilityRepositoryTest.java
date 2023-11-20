@@ -68,10 +68,11 @@ class SellerAvailabilityRepositoryTest {
     }
 
     private SellerAvailabilityDocument createAvailability(LocalDateTime startDate, LocalDateTime endDate, SellerAvailabilityState state) {
-        return SellerAvailabilityDocument.builder()
-                .startDateTime(startDate)
-                .endDateTime(endDate)
-                .sellerAvailabilityState(state)
-                .build();
+        SellerAvailabilityDocument document = new SellerAvailabilityDocument();
+        document.setStartDateTime(startDate);
+        document.setEndDateTime(endDate);
+        document.setSellerAvailabilityState(state);
+
+        return document;
     }
 }

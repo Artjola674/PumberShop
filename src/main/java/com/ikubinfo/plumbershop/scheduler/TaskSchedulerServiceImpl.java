@@ -31,7 +31,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService{
                 .findByExpirationDateLessThanEqual(new Date());
         refreshTokenRepository.deleteAll(refreshTokens);
         resetTokenRepository.deleteAll(resetTokenDocuments);
-        log.debug("Token is deleted successfully");
+        log.debug("Tokens are deleted successfully");
 
     }
 }

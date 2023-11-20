@@ -120,10 +120,10 @@ class RefreshTokenRepositoryTest {
     }
 
     private UserDocument createUser() {
-        return UserDocument.builder()
-                .firstName("Artjola")
-                .lastName("Kotorri")
-                .build();
+        UserDocument userDocument = new UserDocument();
+        userDocument.setFirstName("Artjola");
+        userDocument.setLastName("Kotorri");
+        return userDocument;
     }
 
 }

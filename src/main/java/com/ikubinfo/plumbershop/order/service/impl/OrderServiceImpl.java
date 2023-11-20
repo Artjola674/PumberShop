@@ -71,6 +71,7 @@ public class OrderServiceImpl implements OrderService {
 
         double buyingPriceSum = calculateTotalProductsBuyingPrice(orderDocument);
 
+        orderDocument.setCustomer(userService.getUserByEmail(loggedUser.getEmail()));
         if (UtilClass.userHasGivenRole(loggedUser, Role.PLUMBER)
                 && orderDocument.getCustomer() != null) {
             totalPrice = totalPrice *
@@ -79,7 +80,6 @@ public class OrderServiceImpl implements OrderService {
 
         double earnings = totalPrice - buyingPriceSum;
 
-        orderDocument.setCustomer(userService.getUserByEmail(loggedUser.getEmail()));
         orderDocument.setTotalPrice(totalPrice);
         orderDocument.setEarnings(earnings);
         orderDocument.setDate(LocalDate.now());
@@ -99,7 +99,6 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderDto> getAllOrders(CustomUserDetails loggedUser, OrderRequest request) {
 
         Filter filter = request.getFilter();
-
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
                 Sort.by(Sort.Direction.valueOf(filter.getSortType()),
                         UtilClass.getSortField(OrderDocument.class, filter.getSortBy())));
@@ -275,13 +274,13 @@ public class OrderServiceImpl implements OrderService {
         return table;
     }
 
-
     private PdfPTable createItemListTable(OrderDocument order) {
         PdfPTable table = getPdfPTable(6);
         addItemListTableHeader(table);
         addItemListRows(table, order);
         return table;
     }
+
 
     private void addItemListTableHeader(PdfPTable table) {
         Stream.of(PRODUCT_NAME, PRODUCT_CODE, AMOUNT, PRICE, DISCOUNT, TOTAL_PRICE)

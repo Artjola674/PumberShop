@@ -2,7 +2,6 @@ package com.ikubinfo.plumbershop.order.repo;
 
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.order.model.OrderDocument;
-import com.ikubinfo.plumbershop.order.repo.impl.OrderRepositoryImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class OrderRepositoryTest {
 
     @Autowired
-    private OrderRepositoryImpl underTest;
+    private OrderRepository underTest;
 
     @AfterEach
     void tearDown() {
@@ -133,8 +132,8 @@ class OrderRepositoryTest {
     }
 
     private static OrderDocument createOrder(LocalDate date) {
-        return OrderDocument.builder()
-                .date(date)
-                .build();
+        OrderDocument orderDocument = new OrderDocument();
+        orderDocument.setDate(date);
+        return orderDocument;
     }
 }

@@ -5,14 +5,12 @@ import com.ikubinfo.plumbershop.user.dto.Address;
 import com.ikubinfo.plumbershop.user.enums.Department;
 import com.ikubinfo.plumbershop.user.enums.Role;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDocument extends BaseDocument {

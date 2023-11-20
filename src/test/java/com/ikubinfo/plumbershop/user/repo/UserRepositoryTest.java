@@ -92,11 +92,11 @@ class UserRepositoryTest {
     }
 
     private UserDocument createUser(String email, Role role) {
-        return UserDocument.builder()
-                .firstName("Artjola")
-                .lastName("Kotorri")
-                .email(email)
-                .role(role)
-                .build();
+        UserDocument userDocument = new UserDocument();
+        userDocument.setFirstName("Artjola");
+        userDocument.setLastName("Kotorri");
+        userDocument.setEmail(email);
+        userDocument.setRole(role);
+        return userDocument;
     }
 }

@@ -34,7 +34,7 @@ public class SellerAvailabilityServiceImpl implements SellerAvailabilityService 
     }
 
     @Override
-    public SellerAvailabilityDto create(SellerAvailabilityDto dto) {
+    public SellerAvailabilityDto save(SellerAvailabilityDto dto) {
         SellerAvailabilityDocument doc = mapper.toDocument(dto);
         sellerAvailabilityRepository.save(doc);
         return mapper.toDto(doc);
@@ -47,7 +47,7 @@ public class SellerAvailabilityServiceImpl implements SellerAvailabilityService 
     }
 
     @Override
-    public Page<SellerAvailabilityDto> getAllAvailabilities(Filter filter) {
+    public Page<SellerAvailabilityDto> findAll(Filter filter) {
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
                 Sort.by(Sort.Direction.valueOf(filter.getSortType()),
                         UtilClass.getSortField(UserDocument.class, filter.getSortBy())));

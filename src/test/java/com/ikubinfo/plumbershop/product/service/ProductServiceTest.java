@@ -83,8 +83,8 @@ class ProductServiceTest {
         productRequest.setName(productDocument.getName());
 
         Page<ProductDocument> mockedPage = new PageImpl<>(List.of(productDocument));
-        when(productRepository.findAll(any(BooleanExpression.class), any(Pageable.class)))
-                .thenReturn(mockedPage);
+        given(productRepository.findAll(any(BooleanExpression.class), any(Pageable.class)))
+                .willReturn(mockedPage);
 
         Page<ProductDto> result = underTest.getAll(productRequest);
 
@@ -105,14 +105,13 @@ class ProductServiceTest {
 
     @Test
     void getById_throwException_NotFound() {
-        ProductDto productDto = createProductDto();
-        ProductDocument productDocument = productMapper.toProductDocument(productDto);
+        String id = "1";
 
-        given(productRepository.findById(productDto.getId())).willReturn(Optional.ofNullable(null));
+        given(productRepository.findById(id)).willReturn(Optional.ofNullable(null));
 
-        assertThatThrownBy(() ->underTest.getById(productDto.getId()))
+        assertThatThrownBy(() ->underTest.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("%s not found with %s : '%s' ",PRODUCT,ID, productDto.getId());
+                .hasMessageContaining("%s not found with %s : '%s' ",PRODUCT,ID, id);
 
     }
 
@@ -152,9 +151,10 @@ class ProductServiceTest {
 
     @Test
     void deleteById_success() {
-        String result = underTest.deleteById("1");
+        String id = "1";
+        String result = underTest.deleteById(id);
 
-        verify(productRepository).deleteById("1");
+        verify(productRepository).deleteById(id);
 
         assertThat(result).isEqualTo(DELETED_SUCCESSFULLY.replace(DOCUMENT,PRODUCT));
     }

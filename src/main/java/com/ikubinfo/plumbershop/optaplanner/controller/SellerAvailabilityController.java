@@ -24,14 +24,14 @@ public class SellerAvailabilityController {
     @Operation(summary = "create list of shifts")
     public ResponseEntity<SellerAvailabilityDto> create(@Valid @RequestBody SellerAvailabilityDto dto) {
 
-        return ResponseEntity.ok(sellerAvailabilityService.create(dto));
+        return ResponseEntity.ok(sellerAvailabilityService.save(dto));
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all availabilities")
     public ResponseEntity<Page<SellerAvailabilityDto>> getAllAvailabilities(@Valid @RequestBody Filter filter){
-        return ResponseEntity.ok(sellerAvailabilityService.getAllAvailabilities(filter));
+        return ResponseEntity.ok(sellerAvailabilityService.findAll(filter));
     }
 
     @GetMapping("/id/{id}")

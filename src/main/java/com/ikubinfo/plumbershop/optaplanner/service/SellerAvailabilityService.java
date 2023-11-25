@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SellerAvailabilityService {
-    SellerAvailabilityDto create(SellerAvailabilityDto dto);
+    SellerAvailabilityDto save(SellerAvailabilityDto dto);
 
     List<SellerAvailabilityDocument> findAllByDates(LocalDateTime startDate, LocalDateTime endDate);
 
-    Page<SellerAvailabilityDto> getAllAvailabilities(Filter filter);
+    Page<SellerAvailabilityDto> findAll(Filter filter);
 
     SellerAvailabilityDto getById(String id);
 

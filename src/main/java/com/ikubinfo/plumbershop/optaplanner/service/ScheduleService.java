@@ -9,7 +9,7 @@ public interface ScheduleService {
 
     ScheduleDto solve(int numberOfDays);
 
-    Page<ScheduleDto> getAll(Filter filter);
+    Page<ScheduleDto> findAll(Filter filter);
 
     ScheduleDto getById(String id);
 

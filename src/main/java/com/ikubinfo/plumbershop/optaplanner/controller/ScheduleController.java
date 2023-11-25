@@ -31,7 +31,7 @@ public class ScheduleController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all")
     public ResponseEntity<Page<ScheduleDto>> getAll(@Valid @RequestBody Filter filter){
-        return ResponseEntity.ok(sellerScheduleService.getAll(filter));
+        return ResponseEntity.ok(sellerScheduleService.findAll(filter));
     }
 
     @GetMapping("/id/{id}")

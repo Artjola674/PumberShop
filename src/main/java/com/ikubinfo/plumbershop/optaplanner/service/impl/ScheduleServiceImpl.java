@@ -89,12 +89,13 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .toList();
 
         emailService.sendScheduleToEmail(documentPath, filename, emails);
+        scheduleRepository.save(solution);
 
-        return scheduleMapper.toDto(scheduleRepository.save(solution));
+        return scheduleMapper.toDto(solution);
     }
 
     @Override
-    public Page<ScheduleDto> getAll(Filter filter) {
+    public Page<ScheduleDto> findAll(Filter filter) {
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
                 Sort.by(Sort.Direction.valueOf(filter.getSortType()),
                         UtilClass.getSortField(UserDocument.class, filter.getSortBy())));

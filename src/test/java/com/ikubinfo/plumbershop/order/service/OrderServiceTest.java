@@ -30,12 +30,14 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -72,6 +74,9 @@ class OrderServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Value("${documents.folder}")
+    private String documentPath;
+
     @BeforeEach
     void setUp() {
         underTest = new OrderServiceImpl(orderRepository,userService,productRepository,emailService);
@@ -85,6 +90,7 @@ class OrderServiceTest {
         UserDocument loggedUser = createUserDocument();
         orderDocument.setCustomer(loggedUser);
 
+        ReflectionTestUtils.setField(underTest, "documentPath", documentPath);
         given(userService.getUserByEmail(loggedUser.getEmail())).willReturn(loggedUser);
 
         underTest.save(orderDto, fromUserDocumentToCustomUserDetails(loggedUser));

@@ -53,12 +53,11 @@ class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
 
-    private ProductMapper productMapper;
+    private ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
     @BeforeEach
     void setUp() {
         underTest = new ProductServiceImpl(productRepository);
-        productMapper = Mappers.getMapper(ProductMapper.class);
     }
 
     @Test

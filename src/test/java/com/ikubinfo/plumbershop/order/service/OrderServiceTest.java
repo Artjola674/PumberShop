@@ -66,7 +66,7 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
-    private OrderMapper orderMapper;
+    private OrderMapper orderMapper = Mappers.getMapper((OrderMapper.class));
     @Mock
     private UserService userService;
     @Mock
@@ -80,7 +80,6 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         underTest = new OrderServiceImpl(orderRepository,userService,productRepository,emailService);
-        orderMapper = Mappers.getMapper((OrderMapper.class));
     }
 
     @Test

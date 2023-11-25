@@ -46,12 +46,11 @@ class SellerAvailabilityServiceTest {
 
     @Mock
     private SellerAvailabilityRepository sellerAvailabilityRepository;
-    private SellerAvailabilityMapper mapper;
+    private SellerAvailabilityMapper mapper = Mappers.getMapper(SellerAvailabilityMapper.class);
 
     @BeforeEach
     void setUp() {
         underTest = new SellerAvailabilityServiceImpl(sellerAvailabilityRepository);
-        mapper = Mappers.getMapper(SellerAvailabilityMapper.class);
     }
 
     @Test

@@ -53,7 +53,6 @@ class ScheduleServiceTest {
 
     @Autowired
     private ScheduleService underTest;
-
     @Autowired
     private SolverManager<ScheduleDocument, String> solverManager;
     @Mock
@@ -64,7 +63,6 @@ class ScheduleServiceTest {
     private ShiftService shiftService;
     @Mock
     private ScheduleRepository scheduleRepository;
-    private ScheduleMapper scheduleMapper;
     @Mock
     private EmailService emailService;
 
@@ -75,7 +73,6 @@ class ScheduleServiceTest {
     void setUp() {
         underTest = new ScheduleServiceImpl( solverManager, userService, sellerAvailabilityService,
                 shiftService, scheduleRepository, emailService);
-        scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
     }
 
     @Test

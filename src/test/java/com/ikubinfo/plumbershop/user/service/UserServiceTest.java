@@ -51,7 +51,7 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
-    private UserMapper userMapper;
+    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
@@ -62,7 +62,6 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         underTest = new UserServiceImpl(userRepository,passwordEncoder,emailService,resetTokenService);
-        userMapper = Mappers.getMapper(UserMapper.class);
     }
 
     @Test

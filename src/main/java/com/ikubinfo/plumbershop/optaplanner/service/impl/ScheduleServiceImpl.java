@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.optaplanner.service.impl;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.email.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
@@ -95,10 +95,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Page<ScheduleDto> findAll(Filter filter) {
-        Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
-                Sort.by(Sort.Direction.valueOf(filter.getSortType()),
-                        UtilClass.getSortField(UserDocument.class, filter.getSortBy())));
+    public Page<ScheduleDto> findAll(PageParams pageParams) {
+        Pageable pageable = PageRequest.of(pageParams.getPageNumber(), pageParams.getPageSize(),
+                Sort.by(Sort.Direction.valueOf(pageParams.getSortType()),
+                        UtilClass.getSortField(UserDocument.class, pageParams.getSortBy())));
         return scheduleRepository.findAll(pageable).map(scheduleMapper::toDto);
     }
 

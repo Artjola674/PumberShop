@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.optaplanner.service;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.optaplanner.dto.SellerAvailabilityDto;
 import com.ikubinfo.plumbershop.optaplanner.enums.SellerAvailabilityState;
@@ -8,10 +8,6 @@ import com.ikubinfo.plumbershop.optaplanner.mapper.SellerAvailabilityMapper;
 import com.ikubinfo.plumbershop.optaplanner.model.SellerAvailabilityDocument;
 import com.ikubinfo.plumbershop.optaplanner.repo.SellerAvailabilityRepository;
 import com.ikubinfo.plumbershop.optaplanner.service.impl.SellerAvailabilityServiceImpl;
-import com.ikubinfo.plumbershop.product.dto.ProductDto;
-import com.ikubinfo.plumbershop.product.dto.ProductRequest;
-import com.ikubinfo.plumbershop.product.model.ProductDocument;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -29,10 +25,8 @@ import java.util.Optional;
 
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
 import static com.ikubinfo.plumbershop.optaplanner.constants.Constants.SELLER_AVAILABILITY;
-import static com.ikubinfo.plumbershop.product.constants.ProductConstants.PRODUCT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -77,13 +71,13 @@ class SellerAvailabilityServiceTest {
     @Test
     void getAllAvailabilities_success() {
         SellerAvailabilityDocument availabilityDocument = createAvailabilityDocument();
-        Filter filter = new Filter();
+        PageParams pageParams = new PageParams();
         Page<SellerAvailabilityDocument> mockedPage = new PageImpl<>(List.of(availabilityDocument));
 
         given(sellerAvailabilityRepository.findAll(any(Pageable.class)))
                 .willReturn(mockedPage);
 
-        Page<SellerAvailabilityDto> result = underTest.findAll(filter);
+        Page<SellerAvailabilityDto> result = underTest.findAll(pageParams);
 
         assertThat(result.getContent().get(0).getStartDateTime()).isEqualTo(availabilityDocument.getStartDateTime());
     }

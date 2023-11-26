@@ -1,25 +1,21 @@
 package com.ikubinfo.plumbershop.optaplanner.service;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.email.EmailService;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.optaplanner.dto.ScheduleDto;
-import com.ikubinfo.plumbershop.optaplanner.dto.SellerAvailabilityDto;
 import com.ikubinfo.plumbershop.optaplanner.enums.SellerAvailabilityState;
-import com.ikubinfo.plumbershop.optaplanner.mapper.ScheduleMapper;
 import com.ikubinfo.plumbershop.optaplanner.model.ScheduleDocument;
 import com.ikubinfo.plumbershop.optaplanner.model.SellerAvailabilityDocument;
 import com.ikubinfo.plumbershop.optaplanner.model.ShiftDocument;
 import com.ikubinfo.plumbershop.optaplanner.repo.ScheduleRepository;
 import com.ikubinfo.plumbershop.optaplanner.service.impl.ScheduleServiceImpl;
-import com.ikubinfo.plumbershop.user.dto.Address;
 import com.ikubinfo.plumbershop.user.enums.Department;
 import com.ikubinfo.plumbershop.user.enums.Role;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import com.ikubinfo.plumbershop.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +35,6 @@ import java.util.Optional;
 
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
 import static com.ikubinfo.plumbershop.optaplanner.constants.Constants.SCHEDULE;
-import static com.ikubinfo.plumbershop.optaplanner.constants.Constants.SELLER_AVAILABILITY;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -158,13 +153,13 @@ class ScheduleServiceTest {
     @Test
     void getAll_success() {
         ScheduleDocument schedule = createSchedule();
-        Filter filter = new Filter();
+        PageParams pageParams = new PageParams();
         Page<ScheduleDocument> mockedPage = new PageImpl<>(List.of(schedule));
 
         given(scheduleRepository.findAll(any(Pageable.class)))
                 .willReturn(mockedPage);
 
-        Page<ScheduleDto> result = underTest.findAll(filter);
+        Page<ScheduleDto> result = underTest.findAll(pageParams);
 
         assertThat(result.getContent().get(0).getId()).isEqualTo(schedule.getId());
 

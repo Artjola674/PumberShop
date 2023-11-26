@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.order.dto;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import jakarta.validation.Valid;
 import lombok.Data;
 
@@ -12,5 +12,5 @@ public class OrderRequest {
     private Date toDate;
     private String customerId;
     @Valid
-    private Filter filter;
+    private PageParams pageParams;
 }

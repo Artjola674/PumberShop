@@ -1,22 +1,13 @@
 package com.ikubinfo.plumbershop.product.service;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
-import com.ikubinfo.plumbershop.email.EmailService;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
-import com.ikubinfo.plumbershop.order.mapper.OrderMapper;
-import com.ikubinfo.plumbershop.order.repo.OrderRepository;
-import com.ikubinfo.plumbershop.order.service.OrderService;
-import com.ikubinfo.plumbershop.order.service.impl.OrderServiceImpl;
 import com.ikubinfo.plumbershop.product.dto.ProductDto;
 import com.ikubinfo.plumbershop.product.dto.ProductRequest;
 import com.ikubinfo.plumbershop.product.mapper.ProductMapper;
 import com.ikubinfo.plumbershop.product.model.ProductDocument;
 import com.ikubinfo.plumbershop.product.repo.ProductRepository;
 import com.ikubinfo.plumbershop.product.service.impl.ProductServiceImpl;
-import com.ikubinfo.plumbershop.user.dto.UserDto;
-import com.ikubinfo.plumbershop.user.dto.UserRequest;
-import com.ikubinfo.plumbershop.user.model.UserDocument;
-import com.ikubinfo.plumbershop.user.service.UserService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,11 +25,8 @@ import java.util.Optional;
 
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
 import static com.ikubinfo.plumbershop.product.constants.ProductConstants.PRODUCT;
-import static com.ikubinfo.plumbershop.security.CustomUserDetails.fromUserDocumentToCustomUserDetails;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.USER;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -78,7 +66,7 @@ class ProductServiceTest {
 
         ProductDocument productDocument = createProductDocument();
         ProductRequest productRequest = new ProductRequest();
-        productRequest.setFilter(new Filter());
+        productRequest.setPageParams(new PageParams());
         productRequest.setName(productDocument.getName());
 
         Page<ProductDocument> mockedPage = new PageImpl<>(List.of(productDocument));

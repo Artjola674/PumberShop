@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.order.service;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.email.EmailService;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
@@ -12,19 +12,13 @@ import com.ikubinfo.plumbershop.order.model.OrderDocument;
 import com.ikubinfo.plumbershop.order.repo.OrderRepository;
 import com.ikubinfo.plumbershop.order.service.impl.OrderServiceImpl;
 import com.ikubinfo.plumbershop.product.dto.ProductDto;
-import com.ikubinfo.plumbershop.product.model.ProductDocument;
 import com.ikubinfo.plumbershop.product.repo.ProductRepository;
-import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import com.ikubinfo.plumbershop.user.dto.Address;
-import com.ikubinfo.plumbershop.user.dto.UserDto;
-import com.ikubinfo.plumbershop.user.dto.UserRequest;
 import com.ikubinfo.plumbershop.user.enums.Role;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import com.ikubinfo.plumbershop.user.service.UserService;
 import com.itextpdf.text.DocumentException;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.mail.MessagingException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -48,10 +42,8 @@ import static com.ikubinfo.plumbershop.common.constants.BadRequest.ACTION_NOT_AL
 import static com.ikubinfo.plumbershop.common.constants.Constants.*;
 import static com.ikubinfo.plumbershop.order.constants.OrderConstants.ORDER;
 import static com.ikubinfo.plumbershop.security.CustomUserDetails.fromUserDocumentToCustomUserDetails;
-import static com.ikubinfo.plumbershop.user.constants.UserConstants.USER;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -106,7 +98,7 @@ class OrderServiceTest {
 
         OrderDocument orderDocument = createOrderDocument();
         OrderRequest orderRequest = new OrderRequest();
-        orderRequest.setFilter(new Filter());
+        orderRequest.setPageParams(new PageParams());
         orderRequest.setCustomerId(orderDocument.getCustomer().getId());
         Page<OrderDocument> mockedPage = new PageImpl<>(List.of(orderDocument));
         when(orderRepository.findAll(any(Pageable.class), any(Criteria.class)))

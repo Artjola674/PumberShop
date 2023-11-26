@@ -2,25 +2,17 @@ package com.ikubinfo.plumbershop.product.controller;
 
 import com.ikubinfo.plumbershop.BaseTest;
 import com.ikubinfo.plumbershop.CustomPageImpl;
-import com.ikubinfo.plumbershop.auth.dto.AuthRequest;
-import com.ikubinfo.plumbershop.auth.dto.AuthResponse;
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.product.dto.ProductDto;
 import com.ikubinfo.plumbershop.product.dto.ProductRequest;
-import com.ikubinfo.plumbershop.product.mapper.ProductMapper;
 import com.ikubinfo.plumbershop.product.model.ProductDocument;
 import com.ikubinfo.plumbershop.product.repo.ProductRepository;
-import com.ikubinfo.plumbershop.user.model.UserDocument;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,7 +21,6 @@ import static com.ikubinfo.plumbershop.common.constants.Constants.DELETED_SUCCES
 import static com.ikubinfo.plumbershop.common.constants.Constants.DOCUMENT;
 import static com.ikubinfo.plumbershop.product.constants.ProductConstants.PRODUCT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -96,7 +87,7 @@ class ProductControllerTest extends BaseTest {
         productRepository.save(product3);
 
         ProductRequest productRequest = new ProductRequest();
-        productRequest.setFilter(new Filter());
+        productRequest.setPageParams(new PageParams());
         productRequest.setName(product1.getName());
         productRequest.setCode(product1.getCode());
 
@@ -124,9 +115,9 @@ class ProductControllerTest extends BaseTest {
         productRepository.save(product3);
 
         ProductRequest productRequest = new ProductRequest();
-        Filter filter = new Filter();
-        filter.setPageSize(2);
-        productRequest.setFilter(filter);
+        PageParams pageParams = new PageParams();
+        pageParams.setPageSize(2);
+        productRequest.setPageParams(pageParams);
 
         HttpHeaders headers = createHeaders(getTokenForUser());
 

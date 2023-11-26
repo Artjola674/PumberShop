@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.user.service;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.email.EmailService;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
@@ -112,7 +112,7 @@ class UserServiceTest {
     void getAllUsers_success() {
         UserDocument user = createUserDocument();
         UserRequest userRequest = new UserRequest();
-        userRequest.setFilter(new Filter());
+        userRequest.setPageParams(new PageParams());
         userRequest.setEmail(user.getEmail());
 
         Page<UserDocument> mockedPage = new PageImpl<>(List.of(user));

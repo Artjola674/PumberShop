@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.product.dto;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import jakarta.validation.Valid;
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
 public class ProductRequest {
 
     @Valid
-    private Filter filter;
+    private PageParams pageParams;
     private String code;
     private String name;
 }

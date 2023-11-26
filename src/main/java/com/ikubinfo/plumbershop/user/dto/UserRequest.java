@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.user.dto;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -17,5 +17,5 @@ public class UserRequest {
     @Pattern(regexp = "(^ADMIN$|^SELLER$|^PLUMBER$|^USER$)", message = "Role must be 'ADMIN', 'SELLER', 'USER' or 'PLUMBER'")
     private String role;
     @Valid
-    private Filter filter;
+    private PageParams pageParams;
 }

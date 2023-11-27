@@ -4,13 +4,14 @@ import com.ikubinfo.plumbershop.common.dto.PageParams;
 import jakarta.validation.Valid;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 public class OrderRequest {
-    private Date fromDate;
-    private Date toDate;
+    private LocalDate fromDate;
+    private LocalDate toDate;
     private String customerId;
     @Valid
     private PageParams pageParams;
+
 }

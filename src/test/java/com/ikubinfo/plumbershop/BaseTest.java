@@ -2,6 +2,7 @@ package com.ikubinfo.plumbershop;
 
 import com.ikubinfo.plumbershop.auth.dto.AuthRequest;
 import com.ikubinfo.plumbershop.auth.dto.AuthResponse;
+import com.ikubinfo.plumbershop.user.dto.Address;
 import com.ikubinfo.plumbershop.user.enums.Role;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import com.ikubinfo.plumbershop.user.repo.UserRepository;
@@ -78,7 +79,16 @@ public class BaseTest {
         user.setEmail(email);
         user.setRole(role);
         user.setPassword(passwordEncoder.encode("password"));
+        user.setAddress(createAddress());
         return user;
+    }
+
+    private Address createAddress(){
+        Address address = new Address();
+        address.setCity("city");
+        address.setStreet("street");
+        address.setPostalCode(1001);
+        return address;
     }
 
 }

@@ -16,9 +16,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
-import static com.ikubinfo.plumbershop.common.constants.Constants.DELETED_SUCCESSFULLY;
-import static com.ikubinfo.plumbershop.common.constants.Constants.DOCUMENT;
+import static com.ikubinfo.plumbershop.common.constants.Constants.*;
 import static com.ikubinfo.plumbershop.product.constants.ProductConstants.PRODUCT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -26,8 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ActiveProfiles("test")
 class ProductControllerTest extends BaseTest {
 
-    private static final String PATH = "/products";
-    private static final String PRODUCT_URL = BASE_URL + PATH;
+    private static final String PRODUCT_URL = BASE_URL + "/products";
 
     private final ProductRepository productRepository;
 
@@ -126,6 +125,7 @@ class ProductControllerTest extends BaseTest {
         ResponseEntity<CustomPageImpl<ProductDto>> response = restTemplate.exchange(PRODUCT_URL+"/getAll", HttpMethod.POST,
                 entity, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getContent().size()).isEqualTo(2);
         assertThat(response.getBody().getTotalElements()).isEqualTo(3);
         assertThat(response.getBody().getTotalPages()).isEqualTo(2);
 
@@ -199,6 +199,7 @@ class ProductControllerTest extends BaseTest {
 
         } catch (HttpClientErrorException e) {
             assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(e.getMessage()).contains(INPUT_NOT_NULL);
         }
 
     }
@@ -217,6 +218,26 @@ class ProductControllerTest extends BaseTest {
                 new HttpEntity<>(headers), String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(DELETED_SUCCESSFULLY.replace(DOCUMENT, PRODUCT));
+    }
+
+    @Test
+    void deleteProductById_fail_notAdminOrSeller() {
+        try {
+            ProductDocument product = createProductDocument("Name", "Code");
+            ProductDocument savedProduct = productRepository.save(product);
+
+            HttpHeaders headers = createHeaders(getTokenForUser());
+
+            restTemplate.exchange(
+                    PRODUCT_URL + "/id/" + savedProduct.getId(), HttpMethod.DELETE,
+                    new HttpEntity<>(headers), String.class);
+            assertThat(1).isEqualTo(2); //will fail if exception is not thrown
+
+        } catch (HttpServerErrorException e) {
+            assertThat(e.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+            assertThat(e.getMessage()).contains("Access Denied");
+        }
+
     }
 
     private ProductDto createProductDto(String name, String code) {

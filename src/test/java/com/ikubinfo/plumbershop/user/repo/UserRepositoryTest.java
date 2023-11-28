@@ -45,7 +45,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void checkIfEmailExists() {
+    void checkIfEmailExists_returnTrue() {
         UserDocument user = createUser("artjolakotorri@gmail.com", Role.SELLER);
         underTest.save(user);
         boolean result = underTest.existsByEmail(user.getEmail());
@@ -53,7 +53,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void checkIfEmailDoesNotExists() {
+    void checkIfEmailExists_returnFalse() {
         String email = "artjolakotorri@gmail.com";
         boolean result = underTest.existsByEmail(email);
         assertThat(result).isFalse();

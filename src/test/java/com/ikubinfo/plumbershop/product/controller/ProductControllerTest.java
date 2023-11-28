@@ -72,6 +72,7 @@ class ProductControllerTest extends BaseTest {
 
         } catch (HttpClientErrorException e) {
             assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(e.getMessage()).contains(INPUT_NOT_NULL);
         }
 
     }

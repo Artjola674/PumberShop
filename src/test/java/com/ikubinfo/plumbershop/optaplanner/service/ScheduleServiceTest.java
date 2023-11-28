@@ -75,6 +75,7 @@ class ScheduleServiceTest {
         int numberOfDays = 2;
         List<ShiftDocument> shifts = createShiftList();
 
+        LocalDateTime date = LocalDateTime.now();
         UserDocument seller1 = createUserDocument("1", Role.SELLER, "unavailable@gmail.com", Department.DEPARTMENT_ONE);
         UserDocument seller2 = createUserDocument("2", Role.SELLER, "seller2@gmail.com", Department.DEPARTMENT_ONE);
         UserDocument seller3 = createUserDocument("3", Role.SELLER, "seller3@gmail.com", Department.DEPARTMENT_TWO);
@@ -82,8 +83,8 @@ class ScheduleServiceTest {
         List<UserDocument> sellers = Arrays.asList(seller1, seller2, seller3, seller4);
 
         SellerAvailabilityDocument availability1 = createAvailabilityDocument("1",
-                LocalDateTime.now().with(LocalTime.of(8,0)).plusDays(1),
-                LocalDateTime.now().with(LocalTime.of(20,0)).plusDays(1),
+                date.with(LocalTime.of(8,0)).plusDays(1),
+                date.with(LocalTime.of(20,0)).plusDays(1),
                 SellerAvailabilityState.UNAVAILABLE, seller1);
         List<SellerAvailabilityDocument> availabilities = Arrays.asList(availability1);
 
@@ -107,6 +108,7 @@ class ScheduleServiceTest {
 
     @Test
     void solve_oneShiftPerDay_desired_undesiredShift() {
+        LocalDateTime date = LocalDateTime.now();
         int numberOfDays = 2;
         List<ShiftDocument> shifts = createShiftList();
 
@@ -117,20 +119,20 @@ class ScheduleServiceTest {
         List<UserDocument> sellers = Arrays.asList(seller1, seller2, seller3, seller4);
 
         SellerAvailabilityDocument availability1 = createAvailabilityDocument("1",
-                LocalDateTime.now().with(LocalTime.of(8,0)).plusDays(1),
-                LocalDateTime.now().with(LocalTime.of(20,0)).plusDays(1),
+                date.with(LocalTime.of(8,0)).plusDays(1),
+                date.with(LocalTime.of(20,0)).plusDays(1),
                 SellerAvailabilityState.DESIRED, seller1);
         SellerAvailabilityDocument availability2 = createAvailabilityDocument("2",
-                LocalDateTime.now().with(LocalTime.of(8,0)).plusDays(1),
-                LocalDateTime.now().with(LocalTime.of(14,0)).plusDays(1),
+                date.with(LocalTime.of(8,0)).plusDays(1),
+                date.with(LocalTime.of(14,0)).plusDays(1),
                 SellerAvailabilityState.UNDESIRED, seller2);
         SellerAvailabilityDocument availability3 = createAvailabilityDocument("3",
-                LocalDateTime.now().with(LocalTime.of(8,0)).plusDays(1),
-                LocalDateTime.now().with(LocalTime.of(10,0)).plusDays(1),
+                date.with(LocalTime.of(8,0)).plusDays(1),
+                date.with(LocalTime.of(10,0)).plusDays(1),
                 SellerAvailabilityState.UNDESIRED, seller3);
         SellerAvailabilityDocument availability4 = createAvailabilityDocument("4",
-                LocalDateTime.now().with(LocalTime.of(8,0)).plusDays(1),
-                LocalDateTime.now().with(LocalTime.of(14,0)).plusDays(1),
+                date.with(LocalTime.of(8,0)).plusDays(1),
+                date.with(LocalTime.of(14,0)).plusDays(1),
                 SellerAvailabilityState.UNDESIRED, seller4);
         List<SellerAvailabilityDocument> availabilities = Arrays.asList(availability1,availability2,availability3,availability4);
 
@@ -207,13 +209,14 @@ class ScheduleServiceTest {
         UserDocument seller4 = createUserDocument("4", Role.SELLER, "seller4@gmail.com", Department.DEPARTMENT_TWO);
         List<UserDocument> sellers = Arrays.asList(seller1, seller2, seller3, seller4);
 
+        LocalDateTime date = LocalDateTime.now();
         SellerAvailabilityDocument availability1 = createAvailabilityDocument("1",
-                LocalDateTime.now().with(LocalTime.of(8,0)).plusDays(1),
-                LocalDateTime.now().with(LocalTime.of(20,0)).plusDays(1),
+                date.with(LocalTime.of(8,0)).plusDays(1),
+                date.with(LocalTime.of(20,0)).plusDays(1),
                 SellerAvailabilityState.DESIRED, seller1);
         SellerAvailabilityDocument availability2 = createAvailabilityDocument("2",
-                LocalDateTime.now().with(LocalTime.of(8,0)).plusDays(1),
-                LocalDateTime.now().with(LocalTime.of(14,0)).plusDays(1),
+                date.with(LocalTime.of(8,0)).plusDays(1),
+                date.with(LocalTime.of(14,0)).plusDays(1),
                 SellerAvailabilityState.UNDESIRED, seller2);
         List<SellerAvailabilityDocument> availabilities = Arrays.asList(availability1,availability2);
 

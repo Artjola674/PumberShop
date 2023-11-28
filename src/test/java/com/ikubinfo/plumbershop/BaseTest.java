@@ -18,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 public class BaseTest {
 
     protected static final String BASE_URL = "http://localhost:8080/api/v1";
-
     protected static final String PASSWORD = "Password@123";
     protected static final RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 

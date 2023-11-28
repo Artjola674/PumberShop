@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 public class BaseTest {
 
     protected static final String BASE_URL = "http://localhost:8080/api/v1";
+
+    protected static final String PASSWORD = "Password@123";
     protected static final RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
     @Autowired
@@ -54,16 +56,19 @@ public class BaseTest {
     }
 
     protected AuthResponse doLogin(String email ){
-        AuthRequest authRequest= AuthRequest.builder()
-                .email(email)
-                .password("Password@123")
-                .build();
+        AuthRequest authRequest= createAuthRequest(email,PASSWORD);
 
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<AuthRequest> entity = new HttpEntity<>(authRequest, headers);
+        HttpEntity<AuthRequest> entity = new HttpEntity<>(authRequest);
         ResponseEntity<AuthResponse> response = restTemplate.postForEntity(
                 BASE_URL + "/auth/login", entity, AuthResponse.class);
         return response.getBody();
+    }
+
+    protected AuthRequest createAuthRequest(String email, String password) {
+        return AuthRequest.builder()
+                .email(email)
+                .password(password)
+                .build();
     }
 
     protected HttpHeaders createHeaders(String token) {
@@ -79,7 +84,7 @@ public class BaseTest {
         user.setLastName("Kotorri");
         user.setEmail(email);
         user.setRole(role);
-        user.setPassword(passwordEncoder.encode("Password@123"));
+        user.setPassword(passwordEncoder.encode(PASSWORD));
         user.setAddress(createAddress());
         return user;
     }

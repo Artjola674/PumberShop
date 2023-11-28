@@ -189,7 +189,7 @@ class UserControllerTest extends BaseTest {
     }
 
     @Test
-    void getUserById_fail() {
+    void getUserById_fail_notFound() {
         try {
             HttpHeaders headers = createHeaders(getTokenForAdmin());
 
@@ -327,7 +327,7 @@ class UserControllerTest extends BaseTest {
 
         UserDocument user = createUserDocument("user1@gmail.com", Role.SELLER);
         UserDocument savedUser = userRepository.save(user);
-        ChangePasswordDto changePasswordDto = new ChangePasswordDto("Password@123", "NewPass@!1245");
+        ChangePasswordDto changePasswordDto = new ChangePasswordDto(PASSWORD, "NewPass@!1245");
 
 
         HttpHeaders headers = createHeaders(doLogin(user.getEmail()).getAccessToken());
@@ -371,7 +371,7 @@ class UserControllerTest extends BaseTest {
         try {
             UserDocument user = createUserDocument("user1@gmail.com", Role.SELLER);
             UserDocument savedUser = userRepository.save(user);
-            ChangePasswordDto changePasswordDto = new ChangePasswordDto("Password@123", "newPass");
+            ChangePasswordDto changePasswordDto = new ChangePasswordDto(PASSWORD, "newPass");
 
 
             HttpHeaders headers = createHeaders(doLogin(user.getEmail()).getAccessToken());
@@ -427,7 +427,7 @@ class UserControllerTest extends BaseTest {
         ResetTokenDocument resetTokenDocument = createResetToken(savedUser,new Date(System.currentTimeMillis() + 50000));
         resetTokenRepository.save(resetTokenDocument);
 
-        ResetPasswordDto resetPasswordDto = new ResetPasswordDto("Password@123","Password@123");
+        ResetPasswordDto resetPasswordDto = new ResetPasswordDto(PASSWORD,PASSWORD);
         HttpEntity<ResetPasswordDto> entity = new HttpEntity<>(resetPasswordDto);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -447,7 +447,7 @@ class UserControllerTest extends BaseTest {
             ResetTokenDocument resetTokenDocument = createResetToken(savedUser,new Date(System.currentTimeMillis() - 50000));
             resetTokenRepository.save(resetTokenDocument);
 
-            ResetPasswordDto resetPasswordDto = new ResetPasswordDto("Password@123","Password@123");
+            ResetPasswordDto resetPasswordDto = new ResetPasswordDto(PASSWORD,PASSWORD);
             HttpEntity<ResetPasswordDto> entity = new HttpEntity<>(resetPasswordDto);
 
             restTemplate.exchange(

@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface SellerAvailabilityRepository extends MongoRepository<SellerAvailabilityDocument, String> {
 
-
     List<SellerAvailabilityDocument> findByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(LocalDateTime startDate, LocalDateTime endDate);
 }

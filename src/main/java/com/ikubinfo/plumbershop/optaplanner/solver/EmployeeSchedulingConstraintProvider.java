@@ -36,8 +36,9 @@ public class EmployeeSchedulingConstraintProvider implements ConstraintProvider 
     Constraint noOverlappingShifts(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachUniquePair(ShiftDocument.class, Joiners.equal(ShiftDocument::getSeller),
                         Joiners.overlapping(ShiftDocument::getStartDateTime, ShiftDocument::getEndDateTime))
-                .penalize(HardSoftScore.ONE_HARD,
-                        EmployeeSchedulingConstraintProvider::getMinuteOverlap)
+                .penalize(HardSoftScore.ONE_HARD, (shift1, shift2) ->
+                        getMinuteOverlap(shift1.getStartDateTime(),shift1.getEndDateTime(),
+                                shift2.getStartDateTime(), shift2.getEndDateTime()))
                 .asConstraint("Overlapping shift");
     }
 
@@ -52,21 +53,24 @@ public class EmployeeSchedulingConstraintProvider implements ConstraintProvider 
     Constraint unavailableEmployee(ConstraintFactory constraintFactory) {
         return getConstraintStreamWithAvailabilityIntersections(constraintFactory,SellerAvailabilityState.UNAVAILABLE)
                 .penalize(HardSoftScore.ONE_HARD,
-                        (shift, availability) -> getShiftDurationInMinutes(shift))
+                        (shift, availability) -> getMinuteOverlap(shift.getStartDateTime(),shift.getEndDateTime(),
+                                availability.getStartDateTime(), availability.getEndDateTime()))
                 .asConstraint("Unavailable employee");
     }
 
     Constraint desiredDayForEmployee(ConstraintFactory constraintFactory) {
         return getConstraintStreamWithAvailabilityIntersections(constraintFactory,SellerAvailabilityState.DESIRED)
                 .reward(HardSoftScore.ONE_SOFT,
-                        (shift, availability) -> getShiftDurationInMinutes(shift))
+                        (shift, availability) -> getMinuteOverlap(shift.getStartDateTime(),shift.getEndDateTime(),
+                                availability.getStartDateTime(), availability.getEndDateTime()))
                 .asConstraint("Desired day for employee");
     }
 
     Constraint undesiredDayForEmployee(ConstraintFactory constraintFactory) {
         return getConstraintStreamWithAvailabilityIntersections(constraintFactory,SellerAvailabilityState.UNDESIRED)
                 .penalize(HardSoftScore.ONE_SOFT,
-                        (shift, availability) -> getShiftDurationInMinutes(shift))
+                        (shift, availability) -> getMinuteOverlap(shift.getStartDateTime(),shift.getEndDateTime(),
+                                availability.getStartDateTime(), availability.getEndDateTime()))
                 .asConstraint("Undesired day for employee");
     }
 
@@ -82,17 +86,12 @@ public class EmployeeSchedulingConstraintProvider implements ConstraintProvider 
 
     }
 
-    private static int getMinuteOverlap(ShiftDocument shift1, ShiftDocument shift2) {
-        LocalDateTime shift1Start = shift1.getStartDateTime();
-        LocalDateTime shift1End = shift1.getEndDateTime();
-        LocalDateTime shift2Start = shift2.getStartDateTime();
-        LocalDateTime shift2End = shift2.getEndDateTime();
-        return (int) Duration.between((shift1Start.compareTo(shift2Start) > 0) ? shift1Start : shift2Start,
-                (shift1End.compareTo(shift2End) < 0) ? shift1End : shift2End).toMinutes();
+    private static int getMinuteOverlap(LocalDateTime firstStartTime, LocalDateTime firstEndTime,
+                                        LocalDateTime secondStartTime, LocalDateTime secondEndTime ) {
+
+        return (int) Duration.between((firstStartTime.compareTo(secondStartTime) > 0) ? firstStartTime : secondStartTime,
+                (firstEndTime.compareTo(secondEndTime) < 0) ? firstEndTime : secondEndTime).toMinutes();
     }
 
-    private static int getShiftDurationInMinutes(ShiftDocument shift) {
-        return (int) Duration.between(shift.getStartDateTime(), shift.getEndDateTime()).toMinutes();
-    }
 
 }

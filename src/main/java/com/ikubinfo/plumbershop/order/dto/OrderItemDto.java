@@ -1,6 +1,7 @@
 package com.ikubinfo.plumbershop.order.dto;
 
 import com.ikubinfo.plumbershop.product.dto.ProductDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import static com.ikubinfo.plumbershop.common.constants.Constants.INPUT_NOT_NULL
 public class OrderItemDto {
 
     @NotNull(message = INPUT_NOT_NULL)
+    @Valid
     private ProductDto product;
     @NotNull(message = INPUT_NOT_NULL)
     private Integer amount;

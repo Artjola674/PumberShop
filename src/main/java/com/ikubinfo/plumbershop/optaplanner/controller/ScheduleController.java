@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.optaplanner.controller;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.optaplanner.dto.ScheduleDto;
 import com.ikubinfo.plumbershop.optaplanner.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,8 +30,8 @@ public class ScheduleController {
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all")
-    public ResponseEntity<Page<ScheduleDto>> getAll(@Valid @RequestBody Filter filter){
-        return ResponseEntity.ok(sellerScheduleService.getAll(filter));
+    public ResponseEntity<Page<ScheduleDto>> getAll(@Valid @RequestBody PageParams pageParams){
+        return ResponseEntity.ok(sellerScheduleService.findAll(pageParams));
     }
 
     @GetMapping("/id/{id}")

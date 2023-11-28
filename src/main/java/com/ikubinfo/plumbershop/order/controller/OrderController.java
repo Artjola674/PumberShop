@@ -33,7 +33,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.save(orderDto, loggedUser));
     }
 
-    @GetMapping()
+    @GetMapping
     @PreAuthorize("permitAll()")
     @Operation(summary = "Get all orders")
     public ResponseEntity<Page<OrderDto>> getAllOrders(@Valid @RequestBody OrderRequest request,

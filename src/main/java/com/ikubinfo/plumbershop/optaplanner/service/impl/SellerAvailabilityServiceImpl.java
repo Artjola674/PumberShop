@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.optaplanner.service.impl;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.optaplanner.dto.SellerAvailabilityDto;
@@ -34,7 +34,7 @@ public class SellerAvailabilityServiceImpl implements SellerAvailabilityService 
     }
 
     @Override
-    public SellerAvailabilityDto create(SellerAvailabilityDto dto) {
+    public SellerAvailabilityDto save(SellerAvailabilityDto dto) {
         SellerAvailabilityDocument doc = mapper.toDocument(dto);
         sellerAvailabilityRepository.save(doc);
         return mapper.toDto(doc);
@@ -47,10 +47,10 @@ public class SellerAvailabilityServiceImpl implements SellerAvailabilityService 
     }
 
     @Override
-    public Page<SellerAvailabilityDto> getAllAvailabilities(Filter filter) {
-        Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
-                Sort.by(Sort.Direction.valueOf(filter.getSortType()),
-                        UtilClass.getSortField(UserDocument.class, filter.getSortBy())));
+    public Page<SellerAvailabilityDto> findAll(PageParams pageParams) {
+        Pageable pageable = PageRequest.of(pageParams.getPageNumber(), pageParams.getPageSize(),
+                Sort.by(Sort.Direction.valueOf(pageParams.getSortType()),
+                        UtilClass.getSortField(UserDocument.class, pageParams.getSortBy())));
         return sellerAvailabilityRepository.findAll(pageable).map(mapper::toDto);
     }
 

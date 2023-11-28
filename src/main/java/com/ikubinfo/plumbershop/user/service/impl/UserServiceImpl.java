@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.user.service.impl;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.email.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
@@ -72,11 +72,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDto> getAllUsers( UserRequest userRequest) {
-        Filter filter = userRequest.getFilter();
+        PageParams pageParams = userRequest.getPageParams();
 
-        Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(),
-                Sort.by(Sort.Direction.valueOf(filter.getSortType()),
-                        UtilClass.getSortField(UserDocument.class, filter.getSortBy())));
+        Pageable pageable = PageRequest.of(pageParams.getPageNumber(), pageParams.getPageSize(),
+                Sort.by(Sort.Direction.valueOf(pageParams.getSortType()),
+                        UtilClass.getSortField(UserDocument.class, pageParams.getSortBy())));
 
         QUserDocument qUser = new QUserDocument(USER_DOCUMENT);
         BooleanExpression predicate = hasEmail(userRequest.getEmail(), qUser)

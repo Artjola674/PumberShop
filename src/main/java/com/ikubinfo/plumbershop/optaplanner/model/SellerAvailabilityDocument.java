@@ -13,4 +13,6 @@ public class SellerAvailabilityDocument extends BaseDocument {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private SellerAvailabilityState sellerAvailabilityState;
+
+
 }

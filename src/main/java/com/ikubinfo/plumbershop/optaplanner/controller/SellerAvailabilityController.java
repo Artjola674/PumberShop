@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.optaplanner.controller;
 
-import com.ikubinfo.plumbershop.common.dto.Filter;
+import com.ikubinfo.plumbershop.common.dto.PageParams;
 import com.ikubinfo.plumbershop.optaplanner.dto.SellerAvailabilityDto;
 import com.ikubinfo.plumbershop.optaplanner.service.SellerAvailabilityService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,14 +24,14 @@ public class SellerAvailabilityController {
     @Operation(summary = "create list of shifts")
     public ResponseEntity<SellerAvailabilityDto> create(@Valid @RequestBody SellerAvailabilityDto dto) {
 
-        return ResponseEntity.ok(sellerAvailabilityService.create(dto));
+        return ResponseEntity.ok(sellerAvailabilityService.save(dto));
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all availabilities")
-    public ResponseEntity<Page<SellerAvailabilityDto>> getAllAvailabilities(@Valid @RequestBody Filter filter){
-        return ResponseEntity.ok(sellerAvailabilityService.getAllAvailabilities(filter));
+    public ResponseEntity<Page<SellerAvailabilityDto>> getAllAvailabilities(@Valid @RequestBody PageParams pageParams){
+        return ResponseEntity.ok(sellerAvailabilityService.findAll(pageParams));
     }
 
     @GetMapping("/id/{id}")

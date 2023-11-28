@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @PatchMapping("/forgetPassword")
-    @Operation(summary = "reset password")
+    @Operation(summary = "forget password")
     public ResponseEntity<String> forgetPassword(@RequestParam String email){
         return ResponseEntity.ok(userService.forgetPassword(email));
     }

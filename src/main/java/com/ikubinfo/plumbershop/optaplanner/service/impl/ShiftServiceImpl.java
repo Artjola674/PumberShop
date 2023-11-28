@@ -30,7 +30,7 @@ public class ShiftServiceImpl implements ShiftService {
 
     @Override
     public List<ShiftDocument> createShiftList(int daysAfterToday) {
-        List<ShiftDocument> shifts = IntStream.range(0, daysAfterToday)
+        List<ShiftDocument> shifts = IntStream.range(1, daysAfterToday+1)
                 .mapToObj(this::createShiftsForDay)
                 .flatMap(List::stream)
                 .toList();

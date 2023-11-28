@@ -21,7 +21,7 @@ public class ProductController {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
     @Operation(summary = "create a new product")
-    public ResponseEntity<ProductDto> saveProduct(@RequestBody ProductDto productDto){
+    public ResponseEntity<ProductDto> saveProduct(@Valid @RequestBody ProductDto productDto){
         return ResponseEntity.ok(productService.save(productDto));
     }
 
@@ -41,7 +41,7 @@ public class ProductController {
     @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
     @Operation(summary = "Update a product by ID")
     public ResponseEntity<ProductDto> updateProductById(@PathVariable String id,
-                                                        @RequestBody ProductDto productDto){
+                                                        @Valid @RequestBody ProductDto productDto){
         return ResponseEntity.ok(productService.updateById(id,productDto));
     }
 

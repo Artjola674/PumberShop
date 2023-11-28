@@ -37,6 +37,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
         query.skip(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.with(pageable.getSort());
 
         List<OrderDocument> results = mongoTemplate.find(query, OrderDocument.class);
 
@@ -54,4 +55,10 @@ public class OrderRepositoryImpl implements OrderRepository {
     public void delete(OrderDocument orderDocument) {
         mongoTemplate.remove(orderDocument);
     }
+
+    @Override
+    public void deleteAll() {
+        mongoTemplate.remove(new Query(), "orderDocument");
+    }
+
 }

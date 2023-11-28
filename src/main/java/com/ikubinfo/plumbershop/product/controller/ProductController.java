@@ -25,7 +25,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.save(productDto));
     }
 
-    @PostMapping("/getAll")
+    @GetMapping
     @Operation(summary = "Get all products")
     public ResponseEntity<Page<ProductDto>> getProducts(@Valid @RequestBody ProductRequest request){
         return ResponseEntity.ok(productService.getAll(request));

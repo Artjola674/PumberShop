@@ -124,7 +124,7 @@ class OrderControllerTest extends BaseTest {
 
         HttpEntity<OrderRequest> entity = new HttpEntity<>(orderRequest, headers);
 
-        ResponseEntity<CustomPageImpl<OrderDto>> response = restTemplate.exchange(ORDER_URL+"/getAll", HttpMethod.POST,
+        ResponseEntity<CustomPageImpl<OrderDto>> response = restTemplate.exchange(ORDER_URL, HttpMethod.GET,
                 entity, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getContent().size()).isEqualTo(2);
@@ -154,7 +154,7 @@ class OrderControllerTest extends BaseTest {
 
         HttpEntity<OrderRequest> entity = new HttpEntity<>(orderRequest, headers);
 
-        ResponseEntity<CustomPageImpl<OrderDto>> response = restTemplate.exchange(ORDER_URL+"/getAll", HttpMethod.POST,
+        ResponseEntity<CustomPageImpl<OrderDto>> response = restTemplate.exchange(ORDER_URL, HttpMethod.GET,
                 entity, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getContent().size()).isEqualTo(3);
@@ -176,7 +176,7 @@ class OrderControllerTest extends BaseTest {
 
         HttpEntity<OrderRequest> entity = new HttpEntity<>(orderRequest, headers);
 
-        ResponseEntity<CustomPageImpl<OrderDto>> response = restTemplate.exchange(ORDER_URL+"/getAll", HttpMethod.POST,
+        ResponseEntity<CustomPageImpl<OrderDto>> response = restTemplate.exchange(ORDER_URL, HttpMethod.GET,
                 entity, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getContent().size()).isEqualTo(0);

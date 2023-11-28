@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 public class BaseTest {
 
     protected static final String BASE_URL = "http://localhost:8080/api/v1";
-    protected static final RestTemplate restTemplate = new RestTemplate();
+    protected static final RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
     @Autowired
     private UserRepository userRepository;
@@ -25,25 +26,25 @@ public class BaseTest {
     private PasswordEncoder passwordEncoder;
 
     protected String getTokenForSeller(){
-        UserDocument user = createUserDocument(Role.SELLER, "seller@gmail.com");
+        UserDocument user = createUserDocument("seller@gmail.com", Role.SELLER);
         userRepository.save(user);
         return doLogin(user.getEmail()).getAccessToken();
     }
 
     protected String getTokenForUser(){
-        UserDocument user = createUserDocument(Role.USER, "user@gmail.com");
+        UserDocument user = createUserDocument("user@gmail.com", Role.USER);
         userRepository.save(user);
         return doLogin(user.getEmail()).getAccessToken();
     }
 
     protected String getTokenForPlumber(){
-        UserDocument user = createUserDocument(Role.PLUMBER, "plumber@gmail.com");
+        UserDocument user = createUserDocument("plumber@gmail.com", Role.PLUMBER);
         userRepository.save(user);
         return doLogin(user.getEmail()).getAccessToken();
     }
 
     protected String getTokenForAdmin(){
-        UserDocument user = createUserDocument(Role.ADMIN, "admin@gmail.com");
+        UserDocument user = createUserDocument("admin@gmail.com", Role.ADMIN);
         userRepository.save(user);
         return doLogin(user.getEmail()).getAccessToken();
     }
@@ -55,7 +56,7 @@ public class BaseTest {
     protected AuthResponse doLogin(String email ){
         AuthRequest authRequest= AuthRequest.builder()
                 .email(email)
-                .password("password")
+                .password("Password@123")
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
@@ -72,13 +73,13 @@ public class BaseTest {
     }
 
 
-    private UserDocument createUserDocument(Role role, String email) {
+    protected UserDocument createUserDocument(String email, Role role) {
         UserDocument user = new UserDocument();
         user.setFirstName("Artjola");
         user.setLastName("Kotorri");
         user.setEmail(email);
         user.setRole(role);
-        user.setPassword(passwordEncoder.encode("password"));
+        user.setPassword(passwordEncoder.encode("Password@123"));
         user.setAddress(createAddress());
         return user;
     }

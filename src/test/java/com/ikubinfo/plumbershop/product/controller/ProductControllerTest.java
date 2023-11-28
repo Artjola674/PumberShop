@@ -95,8 +95,8 @@ class ProductControllerTest extends BaseTest {
 
         HttpEntity<ProductRequest> entity = new HttpEntity<>(productRequest, headers);
 
-        ResponseEntity<CustomPageImpl<ProductDto>> response = restTemplate.exchange(PRODUCT_URL+"/getAll", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<>() {});
+        ResponseEntity<CustomPageImpl<ProductDto>> response = restTemplate.exchange(PRODUCT_URL,
+                HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getContent().size()).isEqualTo(2);
         assertThat(response.getBody().get().findAny().get().getName()).isEqualTo(product1.getName());
@@ -118,12 +118,10 @@ class ProductControllerTest extends BaseTest {
         pageParams.setPageSize(2);
         productRequest.setPageParams(pageParams);
 
-        HttpHeaders headers = createHeaders(getTokenForUser());
+        HttpEntity<ProductRequest> entity = new HttpEntity<>(productRequest);
 
-        HttpEntity<ProductRequest> entity = new HttpEntity<>(productRequest, headers);
-
-        ResponseEntity<CustomPageImpl<ProductDto>> response = restTemplate.exchange(PRODUCT_URL+"/getAll", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<>() {});
+        ResponseEntity<CustomPageImpl<ProductDto>> response = restTemplate.exchange(PRODUCT_URL,
+                HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getContent().size()).isEqualTo(2);
         assertThat(response.getBody().getTotalElements()).isEqualTo(3);
@@ -136,23 +134,20 @@ class ProductControllerTest extends BaseTest {
         ProductDocument product1 = createProductDocument("Name", "Code");
         ProductDocument savedProduct = productRepository.save(product1);
 
-        HttpHeaders headers = createHeaders(getTokenForUser());
-
         ResponseEntity<ProductDto> response = restTemplate.exchange(
                 PRODUCT_URL+"/id/"+savedProduct.getId(), HttpMethod.GET,
-        new HttpEntity<>( headers), ProductDto.class);
+        null, ProductDto.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getCode()).isEqualTo(product1.getCode());
     }
 
     @Test
-    void getProductById_fail() {
+    void getProductById_fail_notFound() {
         try {
-            HttpHeaders headers = createHeaders(getTokenForUser());
 
             restTemplate.exchange(
                     PRODUCT_URL+"/id/"+ UtilClass.createRandomString(), HttpMethod.GET,
-                    new HttpEntity<>( headers), ProductDto.class);
+                    null, ProductDto.class);
 
             assertThat(1).isEqualTo(2); //will fail if exception is not thrown
 
@@ -231,6 +226,7 @@ class ProductControllerTest extends BaseTest {
             restTemplate.exchange(
                     PRODUCT_URL + "/id/" + savedProduct.getId(), HttpMethod.DELETE,
                     new HttpEntity<>(headers), String.class);
+
             assertThat(1).isEqualTo(2); //will fail if exception is not thrown
 
         } catch (HttpServerErrorException e) {

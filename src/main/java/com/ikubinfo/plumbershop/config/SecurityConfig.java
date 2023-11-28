@@ -35,8 +35,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/api/v1/users/forgetPassword",
-            "/api/v1/users/resetPassword",
-            "/api/v1/products/getAll"
+            "/api/v1/users/resetPassword"
 
     };
 
@@ -52,6 +51,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/v1/products/**")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/v1/users")
                                 .permitAll()

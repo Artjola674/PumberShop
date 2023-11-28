@@ -114,7 +114,7 @@ class AuthControllerTest extends BaseTest {
     @Test
     void generateTokenFromRefreshToken_success() {
 
-        UserDocument user = createUserDocument("user1@gmail.com", Role.SELLER);
+        UserDocument user = createUserDocument("user1@gmail.com", Role.ADMIN);
         UserDocument savedUser = userRepository.save(user);
         RefreshToken refreshToken = createRefreshToken(savedUser,new Date(System.currentTimeMillis() + 50000));
         refreshTokenRepository.save(refreshToken);
@@ -122,13 +122,17 @@ class AuthControllerTest extends BaseTest {
 
         HttpEntity<TokenRefreshRequest> entity = new HttpEntity<>(refreshRequest);
 
-        ResponseEntity<AuthResponse> response = restTemplate.postForEntity(
-                AUTH_URL + "/refreshToken", entity, AuthResponse.class);
+        String accessToken = restTemplate.postForEntity(
+                AUTH_URL + "/refreshToken", entity, AuthResponse.class).getBody().getAccessToken();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getAccessToken()).isNotNull();
-        assertThat(response.getBody().getRefreshToken()).isNotNull();
 
+        HttpHeaders headers = createHeaders(accessToken);
+
+        ResponseEntity<UserDto> response1 = restTemplate.exchange(
+                BASE_URL+"/users/id/"+savedUser.getId(), HttpMethod.GET,
+                new HttpEntity<>( headers), UserDto.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response1.getBody().getEmail()).isEqualTo(savedUser.getEmail());
 
     }
 

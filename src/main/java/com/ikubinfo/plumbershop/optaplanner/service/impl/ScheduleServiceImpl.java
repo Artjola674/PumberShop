@@ -182,7 +182,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     private List<SellerAvailabilityDocument> getAvailabilities(ScheduleDocument schedule, ShiftDocument shift) {
         return schedule.getAvailabilityList()
                 .stream()
-                .filter(availability -> availability.getSeller().getId().equals(shift.getSeller().getId()))
                 .filter(availability -> availability.getStartDateTime().isBefore(shift.getEndDateTime()))
                 .filter(availability -> availability.getEndDateTime().isAfter(shift.getStartDateTime()))
                 .toList();

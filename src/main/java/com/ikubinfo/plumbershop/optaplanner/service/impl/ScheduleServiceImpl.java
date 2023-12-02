@@ -168,23 +168,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             createCell(row,1, shift.getDepartment().toString());
             createCell(row,2, shift.getStartDateTime().toString());
             createCell(row,3, shift.getEndDateTime().toString());
-
-            List<SellerAvailabilityDocument> availabilities = getAvailabilities(schedule, shift);
-            if (!availabilities.isEmpty()){
-                availabilities.forEach(availability -> {
-                    createCell(row,4, availability.getStartDateTime().toString());
-                    createCell(row,5, availability.getEndDateTime().toString());
-                    createCell(row,6, availability.getSellerAvailabilityState().toString());});
-            }
         }
-    }
-
-    private List<SellerAvailabilityDocument> getAvailabilities(ScheduleDocument schedule, ShiftDocument shift) {
-        return schedule.getAvailabilityList()
-                .stream()
-                .filter(availability -> availability.getStartDateTime().isBefore(shift.getEndDateTime()))
-                .filter(availability -> availability.getEndDateTime().isAfter(shift.getStartDateTime()))
-                .toList();
     }
 
     private void createHeaders(Sheet sheet) {
@@ -193,9 +177,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         createCell(headerRow, 1,DEPARTMENT);
         createCell(headerRow, 2, SHIFT_START_DATE);
         createCell(headerRow, 3, SHIFT_END_DATE);
-        createCell(headerRow, 4, AVAILABILITY_START_DATE);
-        createCell(headerRow, 5, AVAILABILITY_END_DATE);
-        createCell(headerRow, 6, AVAILABILITY_STATE);
     }
 
     private void createCell(Row row, int cellNumber, String value){

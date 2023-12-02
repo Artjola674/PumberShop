@@ -8,14 +8,6 @@ public class Constants {
     public static final String SHIFT_START_DATE= "Shift start date";
     public static final String SHIFT_END_DATE= "Shift end date";
 
-    public static final String AVAILABILITY_START_DATE= "Availability start date";
-
-    public static final String AVAILABILITY_END_DATE= "Availability end date";
-
-    public static final String AVAILABILITY_STATE= "Availability state";
-
-
-
     private Constants() {
     }
 }

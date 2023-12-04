@@ -72,7 +72,6 @@ class AuthServiceTest {
 
         UserDocument user = createUserDocument();
         RefreshToken refreshToken = createRefreshToken(user,new Date());
-        String accessToken = "token";
 
         given(refreshTokenRepository.findByToken(refreshToken.getToken()))
                 .willReturn(Optional.of(refreshToken));

@@ -52,6 +52,7 @@ class TaskSchedulerServiceTest {
         underTest.deleteExpiredTokens();
 
         verify(refreshTokenRepository).deleteAll(List.of(refreshToken));
+        verify(resetTokenRepository).deleteAll(List.of(resetToken));
 
     }
 

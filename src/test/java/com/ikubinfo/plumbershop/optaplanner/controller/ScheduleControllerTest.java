@@ -271,7 +271,7 @@ class ScheduleControllerTest extends BaseTest {
         SellerAvailabilityDocument availability5 = createAvailabilityDocument(
                 date.with(LocalTime.of(8,0)).plusDays(1),
                 date.with(LocalTime.of(20,0)).plusDays(1),
-                SellerAvailabilityState.UNDESIRED, user3);
+                SellerAvailabilityState.UNDESIRED, user4);
         availabilityRepository.save(availability5);
         SellerAvailabilityDocument availability2 = createAvailabilityDocument(
                 date.with(LocalTime.of(8,0)).plusDays(2),

@@ -21,15 +21,4 @@ public class CustomPageImpl<T> extends PageImpl<T> {
         super(content, PageRequest.of(number,size), totalElements);
     }
 
-//    public CustomPageImpl(List<T> content, Pageable pageable, long total) {
-//        super(content, pageable, total);
-//    }
-//
-//    public CustomPageImpl(List<T> content) {
-//        super(content);
-//    }
-//
-//    public CustomPageImpl() {
-//        super(new ArrayList<>());
-//    }
 }

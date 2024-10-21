@@ -16,7 +16,7 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume(MessageRequest messageRequest){
-        log.info(String.format("Json message recieved -> %s", messageRequest.toString()));
+        log.info(String.format("Message received -> %s", messageRequest.toString()));
 
         switch (messageRequest.getMessageType()) {
             case ORDER_CONFIRMATION:

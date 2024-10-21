@@ -43,7 +43,7 @@ public class EmailHelper {
         ScheduleRequest scheduleRequest = new ScheduleRequest(documentPath, filename, emails);
 
         MessageRequest messageRequest = new MessageRequest();
-        messageRequest.setMessageType(MessageType.PASSWORD_RESET);
+        messageRequest.setMessageType(MessageType.SCHEDULE);
         messageRequest.setScheduleRequest(scheduleRequest);
         return messageRequest;
     }

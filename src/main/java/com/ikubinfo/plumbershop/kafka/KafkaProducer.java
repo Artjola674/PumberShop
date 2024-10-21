@@ -22,7 +22,7 @@ public class KafkaProducer {
 
     public void sendMessage(MessageRequest messageRequest) {
 
-        log.error(String.format("Message sent -> %s", messageRequest.toString()));
+        log.info(String.format("Message sent -> %s", messageRequest.toString()));
 
         Message<MessageRequest> message = MessageBuilder
                 .withPayload(messageRequest)

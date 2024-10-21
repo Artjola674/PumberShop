@@ -1,18 +1,19 @@
 package com.ikubinfo.plumbershop.email.service;
 
-import com.ikubinfo.plumbershop.order.model.OrderDocument;
-import jakarta.mail.MessagingException;
+import com.ikubinfo.plumbershop.email.dto.OrderConfirmationRequest;
+import com.ikubinfo.plumbershop.email.dto.PasswordResetRequest;
+import com.ikubinfo.plumbershop.email.dto.PerformanceIssueRequest;
+import com.ikubinfo.plumbershop.email.dto.ScheduleRequest;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface EmailService {
 
-    void sendEmailWhenOrderIsCreated(OrderDocument order) throws MessagingException, IOException;
+    void sendEmailWhenOrderIsCreated(OrderConfirmationRequest orderConfirmationRequest);
 
-    void sendPerformanceIssueEmail(long executionTime, String methodName);
+    void sendPerformanceIssueEmail(PerformanceIssueRequest performanceIssueRequest);
 
-    void sendForgetPasswordEmail(String email, String token);
+    void sendForgetPasswordEmail(PasswordResetRequest passwordResetRequest);
 
-    void sendScheduleToEmail(String documentPath, String filename, List<String> emails);
+    void sendScheduleToEmail(ScheduleRequest scheduleRequest);
 }

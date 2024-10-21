@@ -1,8 +1,8 @@
 package com.ikubinfo.plumbershop.optaplanner.service;
 
 import com.ikubinfo.plumbershop.common.dto.PageParams;
-import com.ikubinfo.plumbershop.email.service.EmailService;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
+import com.ikubinfo.plumbershop.kafka.KafkaProducer;
 import com.ikubinfo.plumbershop.optaplanner.dto.ScheduleDto;
 import com.ikubinfo.plumbershop.optaplanner.enums.SellerAvailabilityState;
 import com.ikubinfo.plumbershop.optaplanner.model.ScheduleDocument;
@@ -59,7 +59,7 @@ class ScheduleServiceTest {
     @Mock
     private ScheduleRepository scheduleRepository;
     @Mock
-    private EmailService emailService;
+    private KafkaProducer kafkaProducer;
 
     @Value("${documents.folder}")
     private String documentPath;
@@ -67,7 +67,7 @@ class ScheduleServiceTest {
     @BeforeEach
     void setUp() {
         underTest = new ScheduleServiceImpl( solverManager, userService, sellerAvailabilityService,
-                shiftService, scheduleRepository, emailService);
+                shiftService, scheduleRepository, kafkaProducer);
     }
 
     @Test
@@ -102,7 +102,7 @@ class ScheduleServiceTest {
         assertThat(result.getShiftList().get(1).getSeller().getEmail()).isNotEqualTo(availability1.getSeller().getEmail());
 
         verify(shiftService).deleteAll();
-        verify(emailService).sendScheduleToEmail(any(), any(), any());
+        verify(kafkaProducer).sendMessage(any());
 
     }
 
@@ -148,7 +148,7 @@ class ScheduleServiceTest {
         assertThat(result.getShiftList().get(2).getSeller().getEmail()).isEqualTo(seller3.getEmail());
 
         verify(shiftService).deleteAll();
-        verify(emailService).sendScheduleToEmail(any(), any(), any());
+        verify(kafkaProducer).sendMessage(any());
 
     }
 

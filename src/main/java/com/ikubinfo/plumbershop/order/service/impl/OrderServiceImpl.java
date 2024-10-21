@@ -1,9 +1,8 @@
 package com.ikubinfo.plumbershop.order.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.PageParams;
-import com.ikubinfo.plumbershop.email.EmailHealper;
+import com.ikubinfo.plumbershop.email.EmailHelper;
 import com.ikubinfo.plumbershop.email.dto.MessageRequest;
-import com.ikubinfo.plumbershop.email.service.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
@@ -27,7 +26,6 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +35,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
@@ -54,23 +51,21 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final UserService userService;
     private final ProductRepository productRepository;
-    private final EmailService emailService;
     private final KafkaProducer kafkaProducer;
 
     @Value("${documents.folder}")
     private String documentPath;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, ProductRepository productRepository, EmailService emailService, KafkaProducer kafkaProducer) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, ProductRepository productRepository, KafkaProducer kafkaProducer) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.productRepository = productRepository;
-        this.emailService = emailService;
         this.kafkaProducer = kafkaProducer;
         this.orderMapper = Mappers.getMapper((OrderMapper.class));
     }
 
     @Override
-    public OrderDto save(OrderDto orderDto, CustomUserDetails loggedUser) throws DocumentException, MessagingException, IOException {
+    public OrderDto save(OrderDto orderDto, CustomUserDetails loggedUser) throws DocumentException, FileNotFoundException {
         OrderDocument orderDocument = orderMapper.toOrderDocument(orderDto);
 
         double totalPrice = calculateTotalOrderPrice(orderDocument);
@@ -94,9 +89,8 @@ public class OrderServiceImpl implements OrderService {
 
         generateBill(orderDocument);
 
-        MessageRequest emailRequest = EmailHealper.createOrderConfirmationEmailRequest(orderDocument);
+        MessageRequest emailRequest = EmailHelper.createOrderConfirmationEmailRequest(orderDocument);
         kafkaProducer.sendMessage(emailRequest);
-//        emailService.sendEmailWhenOrderIsCreated(orderDocument);
 
         OrderDocument savedOrder = orderRepository.save(orderDocument);
 

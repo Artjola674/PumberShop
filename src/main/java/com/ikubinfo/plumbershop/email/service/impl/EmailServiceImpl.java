@@ -1,8 +1,11 @@
 package com.ikubinfo.plumbershop.email.service.impl;
 
+import com.ikubinfo.plumbershop.email.dto.OrderConfirmationRequest;
+import com.ikubinfo.plumbershop.email.dto.PasswordResetRequest;
+import com.ikubinfo.plumbershop.email.dto.PerformanceIssueRequest;
+import com.ikubinfo.plumbershop.email.dto.ScheduleRequest;
 import com.ikubinfo.plumbershop.email.service.EmailService;
 
-import com.ikubinfo.plumbershop.order.model.OrderDocument;
 import com.ikubinfo.plumbershop.user.model.UserDocument;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -13,13 +16,11 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.ikubinfo.plumbershop.common.constants.Constants.COMPANY_EMAIL;
@@ -33,27 +34,31 @@ public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
 
     @Override
-    public void sendEmailWhenOrderIsCreated(OrderDocument order) throws MessagingException, IOException {
-
-           String emailContent = buildOrderCreatedBody(order.getCustomer());
+    public void sendEmailWhenOrderIsCreated(OrderConfirmationRequest orderConfirmationRequest) {
+        try {
+            String emailContent = buildOrderCreatedBody(orderConfirmationRequest.getCustomer());
 
             MimeMessage message = mailSender.createMimeMessage();
 
-            MimeMessageHelper helper = createMessageHelper(new String[]{order.getCustomer().getEmail()},
-                    emailContent,"Order Confirmation", message);
+            MimeMessageHelper helper = createMessageHelper(new String[]{orderConfirmationRequest.getCustomer().getEmail()},
+                emailContent,"Order Confirmation", message);
 
-            addAttachment(order.getBill().getFileLocation()+ order.getBill().getFileName(),
-                    order.getBill().getFileName(), helper);
+            addAttachment(orderConfirmationRequest.getFileLocation()+ orderConfirmationRequest.getFileName(),
+                orderConfirmationRequest.getFileName(), helper);
             mailSender.send(message);
+
+        } catch (IOException | MessagingException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
-    public void sendPerformanceIssueEmail(long executionTime, String methodName) {
+    public void sendPerformanceIssueEmail(PerformanceIssueRequest performanceIssueRequest) {
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            String emailContent = buildPerformanceIssueBody(methodName, executionTime);
+            String emailContent = buildPerformanceIssueBody(performanceIssueRequest.getMethodName(), performanceIssueRequest.getExecutionTime());
             createMessageHelper(new String[]{COMPANY_EMAIL},
                     emailContent,"API Performance Alert", message);
             mailSender.send(message);
@@ -63,11 +68,11 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendForgetPasswordEmail(String email, String token) {
+    public void sendForgetPasswordEmail(PasswordResetRequest passwordResetRequest) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            String emailContent = buildResetPasswordEmailBody(token);
-            createMessageHelper(new String[]{email},
+            String emailContent = buildResetPasswordEmailBody(passwordResetRequest.getContextPath(), passwordResetRequest.getToken());
+            createMessageHelper(new String[]{passwordResetRequest.getEmail()},
                     emailContent,"Reset password", message);
             mailSender.send(message);
         } catch (MessagingException | IOException e) {
@@ -76,17 +81,17 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendScheduleToEmail(String documentPath, String filename, List<String> emails) {
+    public void sendScheduleToEmail(ScheduleRequest scheduleRequest) {
 
         try {
             String emailContent = getEmailContentFromFile("create-schedule.txt");
 
             MimeMessage message = mailSender.createMimeMessage();
 
-            MimeMessageHelper helper = createMessageHelper(emails.toArray(new String[emails.size()]),
+            MimeMessageHelper helper = createMessageHelper(scheduleRequest.getEmails().toArray(new String[scheduleRequest.getEmails().size()]),
                     emailContent,"Schedule", message);
 
-            addAttachment(documentPath + filename, filename, helper);
+            addAttachment(scheduleRequest.getDocumentPath() + scheduleRequest.getFilename(), scheduleRequest.getFilename(), helper);
 
             mailSender.send(message);
         } catch (MessagingException | IOException e) {
@@ -97,10 +102,10 @@ public class EmailServiceImpl implements EmailService {
 
     }
 
-    private String buildResetPasswordEmailBody( String token) throws IOException {
+    private String buildResetPasswordEmailBody(String contextPath, String token) throws IOException {
         String emailContent = getEmailContentFromFile("reset-password.txt");
 
-        String link = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString()+
+        String link = contextPath +
                 "/api/v1/users/resetPassword?ticket="+token;
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("RESET_PASS_LINK", link);

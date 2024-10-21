@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.email.dto;
 
-import com.ikubinfo.plumbershop.order.model.OrderDocument;
+import com.ikubinfo.plumbershop.user.model.UserDocument;
 import lombok.*;
 
 @Data
@@ -8,5 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 public class OrderConfirmationRequest {
 
-    private OrderDocument orderDocument;
+    private String fileName;
+    private String fileLocation;
+    private UserDocument customer;
 }

@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class PasswordResetRequest {
     private String email;
     private String token;
+    private String contextPath;
 }

@@ -1,7 +1,9 @@
 package com.ikubinfo.plumbershop.aop;
 
-import com.ikubinfo.plumbershop.email.service.EmailService;
+import com.ikubinfo.plumbershop.email.EmailHelper;
+import com.ikubinfo.plumbershop.email.dto.MessageRequest;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
+import com.ikubinfo.plumbershop.kafka.KafkaProducer;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ import static com.ikubinfo.plumbershop.common.constants.Constants.ID;
 @RequiredArgsConstructor
 public class LoggingAspect {
 
-    private final EmailService emailService;
+    private final KafkaProducer kafkaProducer;
     private final HttpServletRequest request;
 
     private static final Logger logger =
@@ -46,7 +48,8 @@ public class LoggingAspect {
 
         long executionInSeconds = executionTime/1000;
         if (executionInSeconds > 5){
-            emailService.sendPerformanceIssueEmail(executionInSeconds,methodName);
+            MessageRequest messageRequest = EmailHelper.createPerformanceIssueRequest(executionInSeconds, methodName);
+            kafkaProducer.sendMessage(messageRequest);
         }
 
         return result;

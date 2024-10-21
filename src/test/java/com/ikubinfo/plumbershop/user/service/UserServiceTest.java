@@ -1,9 +1,9 @@
 package com.ikubinfo.plumbershop.user.service;
 
 import com.ikubinfo.plumbershop.common.dto.PageParams;
-import com.ikubinfo.plumbershop.email.service.EmailService;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
+import com.ikubinfo.plumbershop.kafka.KafkaProducer;
 import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
 import com.ikubinfo.plumbershop.user.dto.ResetPasswordDto;
 import com.ikubinfo.plumbershop.user.dto.UserDto;
@@ -55,13 +55,13 @@ class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
-    private EmailService emailService;
+    private KafkaProducer kafkaProducer;
     @Mock
     private ResetTokenService resetTokenService;
 
     @BeforeEach
     void setUp() {
-        underTest = new UserServiceImpl(userRepository,passwordEncoder,emailService,resetTokenService);
+        underTest = new UserServiceImpl(userRepository,passwordEncoder,kafkaProducer,resetTokenService);
     }
 
     @Test
@@ -305,7 +305,7 @@ class UserServiceTest {
         String result = underTest.forgetPassword(userDocument.getEmail());
 
         verify(resetTokenService).createPasswordResetTokenForUser(any(UserDocument.class), anyString());
-        verify(emailService).sendForgetPasswordEmail(eq(userDocument.getEmail()),anyString());
+        verify(kafkaProducer).sendMessage(any());
 
         assertThat(result).isEqualTo(FORGET_PASS);
     }

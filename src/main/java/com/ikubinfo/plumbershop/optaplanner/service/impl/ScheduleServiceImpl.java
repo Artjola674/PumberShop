@@ -1,9 +1,11 @@
 package com.ikubinfo.plumbershop.optaplanner.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.PageParams;
-import com.ikubinfo.plumbershop.email.EmailService;
+import com.ikubinfo.plumbershop.email.EmailHelper;
+import com.ikubinfo.plumbershop.email.dto.MessageRequest;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
+import com.ikubinfo.plumbershop.kafka.KafkaProducer;
 import com.ikubinfo.plumbershop.optaplanner.dto.ScheduleDto;
 import com.ikubinfo.plumbershop.optaplanner.mapper.ScheduleMapper;
 import com.ikubinfo.plumbershop.optaplanner.model.ScheduleDocument;
@@ -50,19 +52,19 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ShiftService shiftService;
     private final ScheduleRepository scheduleRepository;
     private final ScheduleMapper scheduleMapper;
-    private final EmailService emailService;
+    private final KafkaProducer kafkaProducer;
     @Value("${documents.folder}")
     private String documentPath;
 
     public ScheduleServiceImpl(SolverManager<ScheduleDocument, String> solverManager,
                                UserService userService, SellerAvailabilityService sellerAvailabilityService,
-                               ShiftService shiftService, ScheduleRepository scheduleRepository, EmailService emailService) {
+                               ShiftService shiftService, ScheduleRepository scheduleRepository, KafkaProducer kafkaProducer) {
         this.solverManager = solverManager;
         this.userService = userService;
         this.sellerAvailabilityService = sellerAvailabilityService;
         this.shiftService = shiftService;
         this.scheduleRepository = scheduleRepository;
-        this.emailService = emailService;
+        this.kafkaProducer = kafkaProducer;
         this.scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
     }
 
@@ -88,7 +90,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .map(UserDocument::getEmail)
                 .toList();
 
-        emailService.sendScheduleToEmail(documentPath, filename, emails);
+        MessageRequest messageRequest = EmailHelper.createScheduleRequest(documentPath, filename, emails);
+        kafkaProducer.sendMessage(messageRequest);
         scheduleRepository.save(solution);
 
         return scheduleMapper.toDto(solution);

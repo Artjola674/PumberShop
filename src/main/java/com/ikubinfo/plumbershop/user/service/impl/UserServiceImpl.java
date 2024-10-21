@@ -1,10 +1,12 @@
 package com.ikubinfo.plumbershop.user.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.PageParams;
-import com.ikubinfo.plumbershop.email.EmailService;
+import com.ikubinfo.plumbershop.email.EmailHelper;
+import com.ikubinfo.plumbershop.email.dto.MessageRequest;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
+import com.ikubinfo.plumbershop.kafka.KafkaProducer;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;
 import com.ikubinfo.plumbershop.user.dto.ResetPasswordDto;
@@ -38,13 +40,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    private final KafkaProducer kafkaProducer;
     private final ResetTokenService resetTokenService;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, ResetTokenService resetTokenService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, KafkaProducer kafkaProducer, ResetTokenService resetTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
+        this.kafkaProducer = kafkaProducer;
         this.resetTokenService = resetTokenService;
         userMapper = Mappers.getMapper(UserMapper.class);
     }
@@ -139,7 +141,9 @@ public class UserServiceImpl implements UserService {
 
         resetTokenService.createPasswordResetTokenForUser(user, token);
 
-        emailService.sendForgetPasswordEmail(email,token);
+        MessageRequest messageRequest = EmailHelper.createPasswordResetRequest(email, token);
+        kafkaProducer.sendMessage(messageRequest);
+
         return FORGET_PASS;
     }
 

@@ -1,9 +1,10 @@
 package com.ikubinfo.plumbershop.order.service;
 
 import com.ikubinfo.plumbershop.common.dto.PageParams;
-import com.ikubinfo.plumbershop.email.EmailService;
+import com.ikubinfo.plumbershop.email.service.EmailService;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
+import com.ikubinfo.plumbershop.kafka.KafkaProducer;
 import com.ikubinfo.plumbershop.order.dto.OrderDto;
 import com.ikubinfo.plumbershop.order.dto.OrderItemDto;
 import com.ikubinfo.plumbershop.order.dto.OrderRequest;
@@ -64,14 +65,14 @@ class OrderServiceTest {
     @Mock
     private ProductRepository productRepository;
     @Mock
-    private EmailService emailService;
+    private KafkaProducer kafkaProducer;
 
     @Value("${documents.folder}")
     private String documentPath;
 
     @BeforeEach
     void setUp() {
-        underTest = new OrderServiceImpl(orderRepository,userService,productRepository,emailService);
+        underTest = new OrderServiceImpl(orderRepository,userService,productRepository,kafkaProducer);
     }
 
     @Test
@@ -86,7 +87,7 @@ class OrderServiceTest {
 
         underTest.save(orderDto, fromUserDocumentToCustomUserDetails(loggedUser));
 
-        verify(emailService).sendEmailWhenOrderIsCreated(any());
+        verify(kafkaProducer).sendMessage(any());
         verify(orderRepository).save(any(OrderDocument.class));
 
     }

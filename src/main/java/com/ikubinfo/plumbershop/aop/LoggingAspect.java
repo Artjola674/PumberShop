@@ -1,6 +1,6 @@
 package com.ikubinfo.plumbershop.aop;
 
-import com.ikubinfo.plumbershop.email.EmailService;
+import com.ikubinfo.plumbershop.email.service.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;

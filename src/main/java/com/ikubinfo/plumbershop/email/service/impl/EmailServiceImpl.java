@@ -1,6 +1,6 @@
-package com.ikubinfo.plumbershop.email;
+package com.ikubinfo.plumbershop.email.service.impl;
 
-import com.ikubinfo.plumbershop.email.EmailService;
+import com.ikubinfo.plumbershop.email.service.EmailService;
 
 import com.ikubinfo.plumbershop.order.model.OrderDocument;
 import com.ikubinfo.plumbershop.user.model.UserDocument;

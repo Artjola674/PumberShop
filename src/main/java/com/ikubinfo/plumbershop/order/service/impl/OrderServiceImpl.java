@@ -1,10 +1,13 @@
 package com.ikubinfo.plumbershop.order.service.impl;
 
 import com.ikubinfo.plumbershop.common.dto.PageParams;
-import com.ikubinfo.plumbershop.email.EmailService;
+import com.ikubinfo.plumbershop.email.EmailHealper;
+import com.ikubinfo.plumbershop.email.dto.MessageRequest;
+import com.ikubinfo.plumbershop.email.service.EmailService;
 import com.ikubinfo.plumbershop.common.util.UtilClass;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
+import com.ikubinfo.plumbershop.kafka.KafkaProducer;
 import com.ikubinfo.plumbershop.order.dto.Bill;
 import com.ikubinfo.plumbershop.order.dto.OrderDto;
 import com.ikubinfo.plumbershop.order.dto.OrderRequest;
@@ -52,14 +55,17 @@ public class OrderServiceImpl implements OrderService {
     private final UserService userService;
     private final ProductRepository productRepository;
     private final EmailService emailService;
+    private final KafkaProducer kafkaProducer;
+
     @Value("${documents.folder}")
     private String documentPath;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, ProductRepository productRepository, EmailService emailService) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, ProductRepository productRepository, EmailService emailService, KafkaProducer kafkaProducer) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.productRepository = productRepository;
         this.emailService = emailService;
+        this.kafkaProducer = kafkaProducer;
         this.orderMapper = Mappers.getMapper((OrderMapper.class));
     }
 
@@ -88,7 +94,9 @@ public class OrderServiceImpl implements OrderService {
 
         generateBill(orderDocument);
 
-        emailService.sendEmailWhenOrderIsCreated(orderDocument);
+        MessageRequest emailRequest = EmailHealper.createOrderConfirmationEmailRequest(orderDocument);
+        kafkaProducer.sendMessage(emailRequest);
+//        emailService.sendEmailWhenOrderIsCreated(orderDocument);
 
         OrderDocument savedOrder = orderRepository.save(orderDocument);
 

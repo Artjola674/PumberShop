@@ -1,7 +1,7 @@
 package com.ikubinfo.plumbershop.user.service;
 
 import com.ikubinfo.plumbershop.common.dto.PageParams;
-import com.ikubinfo.plumbershop.email.EmailService;
+import com.ikubinfo.plumbershop.email.service.EmailService;
 import com.ikubinfo.plumbershop.exception.BadRequestException;
 import com.ikubinfo.plumbershop.exception.ResourceNotFoundException;
 import com.ikubinfo.plumbershop.user.dto.ChangePasswordDto;

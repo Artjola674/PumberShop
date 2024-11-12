@@ -1,5 +1,5 @@
-# PumberShop
-PumberShop is an e-commerce application that provides a platform for customers to browse and purchase products. It integrates advanced functionalities to enhance user experience, monitoring, and automation, such as intelligent scheduling, logging, and notifications.
+# PlumberShop
+PlumberShop is an e-commerce application that provides a platform for customers to browse and purchase products. It integrates advanced functionalities to enhance user experience, monitoring, and automation, such as intelligent scheduling, logging, and notifications.
 # Features
 - **User Authentication:** Login, registration, password reset, and logout functionalities.
 - **Intelligent Shift Scheduling:** Utilizes OptaPlanner to create optimized schedules for staff shifts.
